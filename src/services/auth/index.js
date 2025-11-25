@@ -71,7 +71,7 @@ export const authOptions = {
     // },
   },
   pages: {
-    signIn: '/login/2',
+    signIn: '/login/verification',
   },
 };
 
