@@ -1,0 +1,42 @@
+.page {
+  position: relative;
+  height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  background: #398ef9;
+  overflow: hidden;
+}
+
+.main {
+  position: relative;
+  width: 100%;
+  max-width: 450px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  flex: 1 0 auto;
+}
+
+.bottom {
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+  left: 0;
+  padding: 24px;
+
+  a {
+    max-width: 400px;
+    margin: 0 auto;
+  }
+}
+
+.app {
+  font-size: 30px;
+  font-weight: 600;
+  color: #fff;
+  position: relative;
+  z-index: 2;
+  padding: 50px 0;
+  text-align: center;
+}

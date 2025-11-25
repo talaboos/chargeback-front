@@ -1,0 +1,11 @@
+services:
+  app:
+    image: chargeback-front
+    container_name: chargeback-front
+    build:
+      context: ./
+      dockerfile: Dockerfile
+      args:
+        - ENV=${NODE_ENV:-}
+    ports:
+      - "${NODE_PORT:-3000}:3000"

@@ -1,0 +1,12 @@
+# dependencies
+.next/
+node_modules/
+public/
+.vscode/
+next-env.d.ts
+out/
+build/
+eslint.config.mjs
+.prettierrc.mjs
+next.config.mjs
+postcss.config.mjs

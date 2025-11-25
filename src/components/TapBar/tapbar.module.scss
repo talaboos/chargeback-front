@@ -1,0 +1,34 @@
+.tapbar {
+  display: flex;
+  width: 100dvw;
+  height: 56px;
+  align-items: center;
+  justify-content: space-around;
+  background: #fff;
+  border-top: 1px solid #F4F4F4;
+
+  a {
+    color: #BFBFC0;
+    font-size: 10px;
+    font-style: normal;
+    font-weight: 600;
+    line-height: normal;
+    letter-spacing: -0.2px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 2px;
+    text-decoration: none;
+
+    &:hover,
+    &.active {
+      text-decoration: none;
+      color: #1A1A2E;
+
+      svg path {
+        fill: #6361F3;
+      }
+    }
+  }
+}

@@ -1,0 +1,23 @@
+.rhap_current-time,
+.rhap_total-time {
+    font-family: Manrope;
+    font-size: 12px;
+    font-style: normal;
+    font-weight: 600;
+    line-height: normal;
+    letter-spacing: -0.24px;
+    color: #80808A;
+}
+
+.rhap_controls-section {
+    padding-top: 20px;
+}
+
+.rhap_download-progress,
+.rhap_progress-bar-show-download {
+    background: #fff;
+}
+
+.rhap_progress-filled {
+    background: #6361F3;
+}

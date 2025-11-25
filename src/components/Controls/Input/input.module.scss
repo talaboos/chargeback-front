@@ -1,0 +1,41 @@
+.input {
+    width: 100%;
+    max-width: 400px;
+    height: 56px;
+    border: 1.5px solid #E3E3E3;
+    display: flex;
+    align-items: center;
+    border-radius: 16px;
+    background: #fff;
+    padding: 0 14px;
+    font-family: "Manrope", sans-serif;
+    font-size: 16px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: normal;
+    letter-spacing: -0.32px;
+    color: #1A1A2E;
+    outline: none;
+
+    &:-webkit-autofill,
+    &:-webkit-autofill:hover,
+    &:-webkit-autofill:focus,
+    &:-webkit-autofill:active {
+        transition: all 0s 50000s;
+    }
+
+    &:active,
+    &:focus {
+      border: 1.5px solid #6361F3;
+    }
+
+    &::placeholder {
+        color: #94949E;
+        font-family: "Manrope", sans-serif;
+        font-size: 16px;
+        font-style: normal;
+        font-weight: 500;
+        line-height: normal;
+        letter-spacing: -0.32px;
+    }
+}
