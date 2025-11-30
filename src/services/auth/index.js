@@ -6,17 +6,8 @@ export const authOptions = {
       name: 'Credentials',
       async authorize(credentials) {
         const { email, token } = credentials;
-        console.log(email, token);
 
-        // const api = new User();
-        //
-        // const { data } = await api.getUser(token);
-
-        const user = {
-          email: 'test@test.com',
-          user: 'test',
-          subscription: true,
-        };
+        const user = { email, token };
 
         if (user) {
           return user;

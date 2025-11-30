@@ -7,7 +7,7 @@ import emailPicHover from 'public/email-icob.svg';
 import Button from '@/components/Controls/Buttons/button';
 import Input from '@/components/Controls/Input';
 
-//import { checkAuth } from '@/action/checkAuth';
+import { checkAuth } from '@/action/checkAuth';
 import { useOnboardingAnswers } from '@/hooks/useOnboardingAnswers';
 import { isValidEmail } from '@/utils/isValidEmail';
 import { useImagePreloader } from '@/hooks/useImagePreloader';
@@ -44,13 +44,9 @@ export default function Email() {
   const onCheckEmail = async (e) => {
     e.preventDefault();
     e.stopPropagation();
-
     setError(null);
     startTransition(async () => {
-      //const { data, status } = await checkAuth(email);
-      const status = 'success';
-      const data = {};
-      data.status = 'completed';
+      const { data, status } = await checkAuth(email);
 
       if (status === 'success') {
         setAnswer('email', email);

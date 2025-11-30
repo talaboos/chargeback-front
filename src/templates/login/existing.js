@@ -1,11 +1,18 @@
 import { useState, useTransition } from 'react';
 import Image from 'next/image';
 import { signIn } from 'next-auth/react';
+import {
+  GoogleAuthProvider,
+  signInWithPopup,
+  OAuthProvider,
+} from 'firebase/auth';
 
 import Button from '@/components/Controls/Buttons/button';
 import Input from '@/components/Controls/Input';
+import SocialNetwork from '@/components/Controls/Buttons/socialNetwork';
 
-//import { loginAuth } from '@/action/loginAuth';
+import { auth } from '@/services/firebase';
+import { loginAuth } from '@/action/loginAuth';
 import { useOnboardingAnswers } from '@/hooks/useOnboardingAnswers';
 
 import styles from './login.module.scss';
@@ -19,24 +26,25 @@ export default function ExistingUser() {
 
   const email = getAnswer('email');
 
-  if (password && error) {
-    setError(false);
-  }
+  const onInput = (pas) => {
+    setPassword(pas);
+    if (pas && error) {
+      setError(false);
+    }
+  };
 
   const onLoginEmail = async (e) => {
     e.preventDefault();
     e.stopPropagation();
     setError(null);
     startTransition(async () => {
-      // const { data, status, message } = await loginAuth({
-      //   email,
-      //   password,
-      // });
-      const status = 'success';
-      const message = 'test message error';
+      const { data, status, message } = await loginAuth({
+        email,
+        password,
+      });
 
       if (status === 'success') {
-        const token = 'testTOKEN';
+        const token = data?.access_token;
         await signIn('credentials', {
           email,
           token,
@@ -47,6 +55,20 @@ export default function ExistingUser() {
         setError(message || 'Check that the data entered is correct');
       }
     });
+  };
+
+  const onLoginGoogle = async () => {
+    const provider = new GoogleAuthProvider();
+    const { user } = await signInWithPopup(auth, provider);
+    console.log('google', user);
+  };
+
+  const onLoginApple = async () => {
+    const provider = new OAuthProvider('apple.com');
+    provider.addScope('email');
+    provider.addScope('name');
+    const { user } = await signInWithPopup(auth, provider);
+    console.log('apple', user);
   };
 
   const onKeyPress = (e) => {
@@ -79,7 +101,7 @@ export default function ExistingUser() {
                 type={!showed ? 'password' : 'text'}
                 id="s2"
                 placeholder="Password"
-                onChange={(v) => setPassword(v)}
+                onChange={(pas) => onInput(pas)}
                 onKeyPress={onKeyPress}
               />
               <span onClick={() => setShowed((v) => !v)}>
@@ -99,11 +121,38 @@ export default function ExistingUser() {
         url="/home"
         onClick={onLoginEmail}
         loading={isPending}
-        tabIndex={!password || password?.length < 8 ? '-1' : '0'}
-        disable={!password || password?.length < 8}
+        tabIndex={!password || password?.length < 5 ? '-1' : '0'}
+        disable={!password || password?.length < 5}
       >
         Log In
       </Button>
+      <div className={styles.or}>
+        <span>or continue with</span>
+      </div>
+      <div className={styles.networks}>
+        <SocialNetwork
+          onClick={onLoginApple}
+          icon={
+            <Image
+              src="/apple-ico.svg"
+              width={24}
+              height={24}
+              alt="Continue with Apple"
+            />
+          }
+        />
+        <SocialNetwork
+          onClick={onLoginGoogle}
+          icon={
+            <Image
+              src="/google-ico.svg"
+              width={24}
+              height={24}
+              alt="Continue with Google"
+            />
+          }
+        />
+      </div>
     </>
   );
 }

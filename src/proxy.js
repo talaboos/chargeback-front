@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 
 export default async function proxy(req) {
-  const session = !!req.cookies.get('__Secure-next-auth.session-token');
+  const session = !!req.cookies.get('next-auth.session-token');
   if (!session) {
     return NextResponse.redirect(new URL('/login/verification', req.url));
   }
@@ -10,5 +10,11 @@ export default async function proxy(req) {
 }
 
 export const config = {
-  matcher: ['/home/:path*', '/home'],
+  matcher: [
+    '/home/:path*',
+    '/home',
+    '/settings',
+    '/ai-assistant',
+    '/ai-assistant/:path*',
+  ],
 };

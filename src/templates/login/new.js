@@ -5,7 +5,7 @@ import { signIn } from 'next-auth/react';
 import Button from '@/components/Controls/Buttons/button';
 import Input from '@/components/Controls/Input';
 
-//import { createUser } from '@/action/createUser';
+import { createUser } from '@/action/createUser';
 import { useOnboardingAnswers } from '@/hooks/useOnboardingAnswers';
 
 import styles from './login.module.scss';
@@ -25,15 +25,13 @@ export default function NewUser() {
     e.stopPropagation();
     setError(null);
     startTransition(async () => {
-      // const { data, status, message } = await createUser({
-      //   email,
-      //   password,
-      // });
-      const status = 'success';
-      const message = 'test message error';
+      const { data, status, message } = await createUser({
+        email,
+        password,
+      });
 
       if (status === 'success') {
-        const token = 'testTOKEN';
+        const token = data?.access_token;
         await signIn('credentials', {
           email,
           token,
