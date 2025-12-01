@@ -1,0 +1,98 @@
+.message {
+  color: #1A1A2E;
+  font-size: 16px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: normal;
+  letter-spacing: -0.32px;
+  display: flex;
+  padding: 16px;
+  border-radius: 16px 16px 16px 4px;
+  background: #F4F4F4;
+  margin: 0 auto 0 0;
+  width: calc(100% - 36px);
+
+  &.user {
+    margin: 0 0 0 auto;
+    border-radius: 16px;
+    background: #E4E4FF;
+  }
+}
+
+.scroll {
+  width: 100%;
+  overflow-y: auto;
+  flex: 1 1 auto;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  gap: 16px;
+  margin: 16px 0;
+
+  &::-webkit-scrollbar {
+    width: 0;
+    height: 0;
+    display: none;
+  }
+}
+
+.end {
+  height: 1px;
+  width: 1px;
+  margin-top: -16px;
+}
+
+.photo {
+  width: 200px;
+  height: 200px;
+  border-radius: 24px;
+  background: #F4F4F4;
+  flex: none;
+  margin: 0 auto 0 0;
+  position: relative;
+
+  &::after {
+    content: url("data:image/png;base64,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");
+    width: 40px;
+    height: 40px;
+    position: absolute;
+    top: calc(50% - 20px);
+    left: calc(50% - 20px);
+    animation: move 1s linear infinite;
+  }
+}
+
+@keyframes move {
+  0% {
+    transform: rotate(0);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.options {
+  display: flex;
+  gap: 8px;
+  flex-direction: column;
+  width: 100%;
+}
+
+.option {
+  padding: 10px 16px;
+  border-radius: 16px;
+  border: 1px solid #A3A2FF;
+  font-size: 16px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: normal;
+  letter-spacing: -0.32px;
+  color: #1A1A2E;
+  margin: 0 0 0 auto;
+  background: #fff;
+  text-align: left;
+  font-family: "Manrope", sans-serif;
+  width: calc(100% - 36px);
+}

@@ -1,0 +1,43 @@
+.post {
+
+}
+
+.form {
+  position: relative;
+  display: flex;
+  flex-wrap: nowrap;
+  width: 100%;
+
+  input {
+    background: #F1F1F1;
+    padding-right: 45px;
+
+    &:active,
+    &:focus {
+      border: 1.5px solid #E3E3E3;
+    }
+  }
+
+  button {
+    flex: none;
+    cursor: pointer;
+    width: 24px;
+    height: 24px;
+    border: none;
+    background: #AEAEB6;
+    position: absolute;
+    border-radius: 50%;
+    right: 14px;
+    top: calc(50% - 12px);
+
+    &::after {
+      content: url("/send-ico.svg");
+      width: 12px;
+      height: 12px;
+      top: 30%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      position: absolute;
+    }
+  }
+}

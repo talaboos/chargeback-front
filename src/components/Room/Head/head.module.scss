@@ -1,0 +1,63 @@
+.head {
+  display: flex;
+  width: 100%;
+  align-items: center;
+  gap: 14px;
+  padding: 8px 0;
+  border-bottom: 1px solid #F4F4F4;
+}
+
+.back {
+  flex: none;
+
+  svg {
+    display: block;
+  }
+}
+
+.about {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+
+  img {
+    border-radius: 50%;
+  }
+
+  div {
+    color: #94949E;
+    font-size: 12px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: normal;
+    letter-spacing: -0.24px;
+
+    span {
+      display: block;
+      color: #000;
+      font-size: 16px;
+      font-weight: 700;
+      letter-spacing: -0.32px;
+    }
+  }
+}
+
+.relationship {
+  display: flex;
+  gap: 24px;
+  align-items: center;
+
+  a {
+    svg {
+      display: block;
+    }
+  }
+
+  button {
+    background: #fff;
+    border: none;
+
+
+  }
+}
