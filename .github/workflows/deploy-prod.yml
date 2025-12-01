@@ -1,0 +1,81 @@
+name: Release on Production
+
+on:
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-prod
+
+env:
+  REMOTE_HOST: ${{ secrets.REMOTE_HOST_PROD }}
+  REMOTE_USER: ${{ secrets.REMOTE_USER_PROD }}
+  REMOTE_SSH_KEY: ${{ secrets.SSH_PRIVATE_KEY_PROD }}
+  REMOTE_PATH: /var/www/chargeback-front
+  GIT_REPO: git@github.com:talaboos/chargeback-front.git
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Deploy
+        id: deployment
+        uses: appleboy/ssh-action@master
+        continue-on-error: true
+        with:
+          host: ${{ env.REMOTE_HOST }}
+          username: ${{ env.REMOTE_USER }}
+          key: ${{ env.REMOTE_SSH_KEY }}
+          passphrase: ${{ env.REMOTE_SSH_PASSPHRASE }}
+          script: |
+            set -e -x
+
+            mkdir -p ${{ env.REMOTE_PATH }}
+            cd ${{ env.REMOTE_PATH }}
+
+            GIT_BRANCH=${{ github.head_ref || github.ref_name || github.ref }}
+            
+            # Backup current state
+            git init
+            git remote add origin ${{env.GIT_REPO}} || echo 'origin already registered'
+            git stash || echo 'nothing to stash'
+            
+            # Pull latest changes
+            git fetch origin $GIT_BRANCH
+            git checkout $GIT_BRANCH
+            git reset --hard origin/$GIT_BRANCH
+            
+            # Set environment variables for docker-compose
+            export NODE_ENV=production
+            
+            # Build and restart containers
+            GIT_BRANCH=$GIT_BRANCH NODE_ENV=production docker-compose build --no-cache
+
+            docker-compose down
+            GIT_BRANCH=$GIT_BRANCH NODE_PORT=3005 docker-compose up -d
+            
+            # Wait for container to be healthy
+            ATTEMPTS=0
+            MAX_ATTEMPTS=30
+
+            CONTAINER_NAME=app_$GIT_BRANCH
+            
+            until [ $ATTEMPTS -ge $MAX_ATTEMPTS ]
+            do
+              if docker ps | grep -q "$CONTAINER_NAME" && [ "$(docker inspect --format='{{.State.Running}}' $CONTAINER_NAME)" = "true" ]; then
+                echo "Container is running successfully!"
+                break
+              fi
+              
+              ATTEMPTS=$((ATTEMPTS+1))
+              echo "Waiting for container to be ready... (Attempt: $ATTEMPTS/$MAX_ATTEMPTS)"
+              sleep 2
+            done
+            
+            if [ $ATTEMPTS -ge $MAX_ATTEMPTS ]; then
+              echo "Container failed to start properly after $MAX_ATTEMPTS attempts."
+              docker logs $CONTAINER_NAME
+              exit 1
+            fi
+            
+            # Clean up old images to save disk space
+            docker image prune -af
