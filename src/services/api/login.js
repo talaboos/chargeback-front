@@ -43,6 +43,19 @@ export class Login extends Api {
 
     return data;
   }
+
+  async loginWithFirebase(query) {
+    const { ok, data } = await this.callAsync(`${REQUEST_URL}auth/FIREBASE`, {
+      method: 'POST',
+      body: JSON.stringify(query),
+    });
+
+    if (!ok) {
+      return null;
+    }
+
+    return data;
+  }
 }
 
 export default Login;

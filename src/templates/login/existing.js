@@ -13,6 +13,7 @@ import SocialNetwork from '@/components/Controls/Buttons/socialNetwork';
 
 import { auth } from '@/services/firebase';
 import { loginAuth } from '@/action/loginAuth';
+import { loginFirebase } from '@/action/loginFirebase';
 import { useOnboardingAnswers } from '@/hooks/useOnboardingAnswers';
 
 import styles from './login.module.scss';
@@ -61,6 +62,24 @@ export default function ExistingUser() {
     const provider = new GoogleAuthProvider();
     const { user } = await signInWithPopup(auth, provider);
     console.log('google', user);
+    if (user) {
+      const { data, status } = await loginFirebase({
+        token: user.accessToken,
+      });
+      if (status === 'success') {
+        const token = data?.access_token;
+        await signIn('credentials', {
+          email,
+          token,
+          redirect: true,
+          callbackUrl: '/home',
+        });
+      } else {
+        console.error('Google: something seems wrong');
+      }
+    } else {
+      console.error('Google: something seems wrong');
+    }
   };
 
   const onLoginApple = async () => {
@@ -69,6 +88,24 @@ export default function ExistingUser() {
     provider.addScope('name');
     const { user } = await signInWithPopup(auth, provider);
     console.log('apple', user);
+    if (user) {
+      const { data, status } = await loginFirebase({
+        token: user.accessToken,
+      });
+      if (status === 'success') {
+        const token = data?.access_token;
+        await signIn('credentials', {
+          email,
+          token,
+          redirect: true,
+          callbackUrl: '/home',
+        });
+      } else {
+        console.error('Apple: something seems wrong');
+      }
+    } else {
+      console.error('Apple: something seems wrong');
+    }
   };
 
   const onKeyPress = (e) => {
