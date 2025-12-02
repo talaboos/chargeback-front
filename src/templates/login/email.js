@@ -46,10 +46,7 @@ export default function Email() {
     e.stopPropagation();
     setError(null);
     startTransition(async () => {
-      const res = await checkAuth(email);
-      console.log('res', res);
-
-      const { data, status } = res;
+      const { data, status } = await checkAuth(email);
 
       if (status === 'success') {
         setAnswer('email', email);
