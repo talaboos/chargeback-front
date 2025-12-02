@@ -1,6 +1,8 @@
 name: Release on Production
 
 on:
+  push:
+    branches: [deploy]
   workflow_dispatch:
 
 concurrency:
@@ -20,7 +22,6 @@ jobs:
       - name: Deploy
         id: deployment
         uses: appleboy/ssh-action@master
-        continue-on-error: true
         with:
           host: ${{ env.REMOTE_HOST }}
           username: ${{ env.REMOTE_USER }}
@@ -44,20 +45,20 @@ jobs:
             git checkout $GIT_BRANCH
             git reset --hard origin/$GIT_BRANCH
             
-            # Set environment variables for docker-compose
+            # Set environment variables for docker compose
             export NODE_ENV=production
             
             # Build and restart containers
-            GIT_BRANCH=$GIT_BRANCH NODE_ENV=production docker-compose build --no-cache
+            GIT_BRANCH=$GIT_BRANCH NODE_ENV=production docker compose build --no-cache
 
-            docker-compose down
-            GIT_BRANCH=$GIT_BRANCH NODE_PORT=3005 docker-compose up -d
+            docker compose down
+            GIT_BRANCH=$GIT_BRANCH NODE_PORT=3005 docker compose up -d
             
             # Wait for container to be healthy
             ATTEMPTS=0
             MAX_ATTEMPTS=30
 
-            CONTAINER_NAME=app_$GIT_BRANCH
+            CONTAINER_NAME=chargeback-front
             
             until [ $ATTEMPTS -ge $MAX_ATTEMPTS ]
             do
