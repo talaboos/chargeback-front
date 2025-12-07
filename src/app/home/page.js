@@ -3,11 +3,22 @@
 import Link from 'next/link';
 
 import TapBar from '@/components/TapBar';
-
-import styles from './page.module.scss';
 import UploadImage from '@/components/UploadImage';
 
+import { uploadFile } from '@/action/uploadFile';
+
+import styles from './page.module.scss';
+
 export default function Home() {
+  const onUploadScreen = async (file) => {
+    const { success, message } = await uploadFile(file);
+    if (success) {
+      alert(message);
+    } else {
+      console.error(message || 'Something is wrong');
+    }
+  };
+
   return (
     <div className={styles.page}>
       <header className={styles.header}>
@@ -16,7 +27,7 @@ export default function Home() {
       <main className={styles.main}>
         <div className={styles.content}>
           <div className={styles.buttons}>
-            <UploadImage onChange={() => alert('uploading images....')} />
+            <UploadImage onChange={(file) => onUploadScreen(file)} />
             <Link href="/ai-assistant">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
