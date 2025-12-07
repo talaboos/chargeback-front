@@ -4,7 +4,7 @@ import { useState } from 'react';
 
 import styles from './upload.module.scss';
 
-export default function UploadImage({ onChange = () => {} }) {
+export default function UploadImage({ onChange = () => {}, pending = false }) {
   const [, setData] = useState(null);
 
   const onImageChange = (event) => {
@@ -30,6 +30,7 @@ export default function UploadImage({ onChange = () => {} }) {
         name="image"
         id="file"
         onChange={onImageChange}
+        disabled={pending}
         style={{ display: 'none' }}
       />
       <label htmlFor="file">
@@ -60,7 +61,7 @@ export default function UploadImage({ onChange = () => {} }) {
             />
           </defs>
         </svg>
-        Add a Screen
+        {pending ? 'Uploading screenshots...' : 'Add a Screen'}
       </label>
     </div>
   );

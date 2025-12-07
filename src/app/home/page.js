@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import { useTransition } from 'react';
 
 import TapBar from '@/components/TapBar';
 import UploadImage from '@/components/UploadImage';
@@ -10,13 +11,17 @@ import { uploadFile } from '@/action/uploadFile';
 import styles from './page.module.scss';
 
 export default function Home() {
+  const [isPending, startTransition] = useTransition();
+
   const onUploadScreen = async (file) => {
-    const { success, message } = await uploadFile(file);
-    if (success) {
-      alert(message);
-    } else {
-      console.error(message || 'Something is wrong');
-    }
+    startTransition(async () => {
+      const { success, message } = await uploadFile(file);
+      if (success) {
+        alert(message);
+      } else {
+        console.error(message || 'Something is wrong');
+      }
+    });
   };
 
   return (
@@ -27,7 +32,10 @@ export default function Home() {
       <main className={styles.main}>
         <div className={styles.content}>
           <div className={styles.buttons}>
-            <UploadImage onChange={(file) => onUploadScreen(file)} />
+            <UploadImage
+              onChange={(file) => onUploadScreen(file)}
+              pending={isPending}
+            />
             <Link href="/ai-assistant">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
