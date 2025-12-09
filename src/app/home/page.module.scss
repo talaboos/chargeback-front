@@ -73,7 +73,6 @@
   padding: 16px 0;
   display: flex;
   align-items: center;
-  flex-direction: column;
   gap: 10px;
 
   button {
@@ -120,3 +119,62 @@
     }
   }
 }
+
+.info {
+  overflow-y: auto;
+  height: 100%;
+}
+
+@keyframes move {
+  0% {
+    transform: rotate(0);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.loading {
+  color: #333;
+  position: relative;
+  overflow: hidden;
+  padding-left: 25px;
+
+  &::after {
+    content: '';
+    position: absolute;
+    top: calc(50% - 9px);
+    left: 0;
+    width: 18px;
+    height: 18px;
+    background: url("/ico_loading.svg") no-repeat;
+    background-size: cover;
+    animation: move 1s linear infinite;
+  }
+}
+
+.tab {
+  .line {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    border-bottom: 1px solid #f1f1f1;
+
+    div {
+      padding: 3px 10px;
+    }
+
+    div:nth-child(1) {
+      font-weight: bold;
+
+      &::first-letter {
+        text-transform: uppercase;
+      }
+    }
+
+    div:nth-child(2) {
+      padding-left: 5px;
+    }
+  }
+}
+
