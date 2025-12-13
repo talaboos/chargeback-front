@@ -2,7 +2,7 @@ name: Release on Production
 
 on:
   push:
-    branches: [deploy]
+    branches: [main]
   workflow_dispatch:
 
 concurrency:
