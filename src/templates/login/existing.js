@@ -61,11 +61,11 @@ export default function ExistingUser() {
   const onLoginGoogle = async () => {
     const provider = new GoogleAuthProvider();
     const { user } = await signInWithPopup(auth, provider);
-    console.log('google', user);
     if (user) {
       const { data, status } = await loginFirebase({
         token: user.accessToken,
       });
+
       if (status === 'success') {
         const token = data?.access_token;
         await signIn('credentials', {
@@ -87,7 +87,6 @@ export default function ExistingUser() {
     provider.addScope('email');
     provider.addScope('name');
     const { user } = await signInWithPopup(auth, provider);
-    console.log('apple', user);
     if (user) {
       const { data, status } = await loginFirebase({
         token: user.accessToken,

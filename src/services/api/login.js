@@ -45,10 +45,13 @@ export class Login extends Api {
   }
 
   async loginWithFirebase(query) {
-    const { ok, data } = await this.callAsync(`${REQUEST_URL}auth/FIREBASE`, {
-      method: 'POST',
-      body: JSON.stringify(query),
-    });
+    const { ok, data } = await this.callAsync(
+      `${REQUEST_URL}auth/firebase/callback`,
+      {
+        method: 'POST',
+        body: JSON.stringify(query),
+      },
+    );
 
     if (!ok) {
       return null;
