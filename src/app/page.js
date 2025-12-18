@@ -11,7 +11,7 @@ import { shortcutAtom } from '@/state/atoms/shortcutAtom';
 import { modalAtom } from '@/state/atoms/modalAtom';
 
 import styles from './page.module.scss';
-import Image from "next/image";
+import Image from 'next/image';
 
 export default function Home() {
   const [popup] = useAtom(shortcutAtom);
