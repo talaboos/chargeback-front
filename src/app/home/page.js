@@ -57,7 +57,12 @@ export default function Home() {
                   </div>
                 );
 
-              return null;
+              return (
+                <div className={styles.about}>
+                  Upload screenshots of
+                  <br /> subscriptions to get information
+                </div>
+              );
             })()}
           </div>
         </div>
