@@ -1,19 +1,11 @@
 import { useState, useTransition } from 'react';
 import Image from 'next/image';
 import { signIn } from 'next-auth/react';
-import {
-  GoogleAuthProvider,
-  signInWithPopup,
-  OAuthProvider,
-} from 'firebase/auth';
 
 import Button from '@/components/Controls/Buttons/button';
 import Input from '@/components/Controls/Input';
-import SocialNetwork from '@/components/Controls/Buttons/socialNetwork';
 
-import { auth } from '@/services/firebase';
 import { loginAuth } from '@/action/loginAuth';
-import { loginFirebase } from '@/action/loginFirebase';
 import { useOnboardingAnswers } from '@/hooks/useOnboardingAnswers';
 
 import styles from './login.module.scss';
@@ -58,54 +50,54 @@ export default function ExistingUser() {
     });
   };
 
-  const onLoginGoogle = async () => {
-    const provider = new GoogleAuthProvider();
-    const { user } = await signInWithPopup(auth, provider);
-    if (user) {
-      const { data, status } = await loginFirebase({
-        token: user.accessToken,
-      });
-
-      if (status === 'success') {
-        const token = data?.access_token;
-        await signIn('credentials', {
-          email,
-          token,
-          redirect: true,
-          callbackUrl: '/home',
-        });
-      } else {
-        console.error('Google: something seems wrong');
-      }
-    } else {
-      console.error('Google: something seems wrong');
-    }
-  };
-
-  const onLoginApple = async () => {
-    const provider = new OAuthProvider('apple.com');
-    provider.addScope('email');
-    provider.addScope('name');
-    const { user } = await signInWithPopup(auth, provider);
-    if (user) {
-      const { data, status } = await loginFirebase({
-        token: user.accessToken,
-      });
-      if (status === 'success') {
-        const token = data?.access_token;
-        await signIn('credentials', {
-          email,
-          token,
-          redirect: true,
-          callbackUrl: '/home',
-        });
-      } else {
-        console.error('Apple: something seems wrong');
-      }
-    } else {
-      console.error('Apple: something seems wrong');
-    }
-  };
+  // const onLoginGoogle = async () => {
+  //   const provider = new GoogleAuthProvider();
+  //   const { user } = await signInWithPopup(auth, provider);
+  //   if (user) {
+  //     const { data, status } = await loginFirebase({
+  //       token: user.accessToken,
+  //     });
+  //
+  //     if (status === 'success') {
+  //       const token = data?.access_token;
+  //       await signIn('credentials', {
+  //         email,
+  //         token,
+  //         redirect: true,
+  //         callbackUrl: '/home',
+  //       });
+  //     } else {
+  //       console.error('Google: something seems wrong');
+  //     }
+  //   } else {
+  //     console.error('Google: something seems wrong');
+  //   }
+  // };
+  //
+  // const onLoginApple = async () => {
+  //   const provider = new OAuthProvider('apple.com');
+  //   provider.addScope('email');
+  //   provider.addScope('name');
+  //   const { user } = await signInWithPopup(auth, provider);
+  //   if (user) {
+  //     const { data, status } = await loginFirebase({
+  //       token: user.accessToken,
+  //     });
+  //     if (status === 'success') {
+  //       const token = data?.access_token;
+  //       await signIn('credentials', {
+  //         email,
+  //         token,
+  //         redirect: true,
+  //         callbackUrl: '/home',
+  //       });
+  //     } else {
+  //       console.error('Apple: something seems wrong');
+  //     }
+  //   } else {
+  //     console.error('Apple: something seems wrong');
+  //   }
+  // };
 
   const onKeyPress = (e) => {
     if (e.key === 'Enter' && password?.length >= 8) {
@@ -162,33 +154,33 @@ export default function ExistingUser() {
       >
         Log In
       </Button>
-      <div className={styles.or}>
-        <span>or continue with</span>
-      </div>
-      <div className={styles.networks}>
-        <SocialNetwork
-          onClick={onLoginApple}
-          icon={
-            <Image
-              src="/apple-ico.svg"
-              width={24}
-              height={24}
-              alt="Continue with Apple"
-            />
-          }
-        />
-        <SocialNetwork
-          onClick={onLoginGoogle}
-          icon={
-            <Image
-              src="/google-ico.svg"
-              width={24}
-              height={24}
-              alt="Continue with Google"
-            />
-          }
-        />
-      </div>
+      {/*<div className={styles.or}>*/}
+      {/*  <span>or continue with</span>*/}
+      {/*</div>*/}
+      {/*<div className={styles.networks}>*/}
+      {/*  <SocialNetwork*/}
+      {/*    onClick={onLoginApple}*/}
+      {/*    icon={*/}
+      {/*      <Image*/}
+      {/*        src="/apple-ico.svg"*/}
+      {/*        width={24}*/}
+      {/*        height={24}*/}
+      {/*        alt="Continue with Apple"*/}
+      {/*      />*/}
+      {/*    }*/}
+      {/*  />*/}
+      {/*  <SocialNetwork*/}
+      {/*    onClick={onLoginGoogle}*/}
+      {/*    icon={*/}
+      {/*      <Image*/}
+      {/*        src="/google-ico.svg"*/}
+      {/*        width={24}*/}
+      {/*        height={24}*/}
+      {/*        alt="Continue with Google"*/}
+      {/*      />*/}
+      {/*    }*/}
+      {/*  />*/}
+      {/*</div>*/}
     </>
   );
 }
