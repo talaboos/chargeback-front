@@ -11,6 +11,7 @@ import { shortcutAtom } from '@/state/atoms/shortcutAtom';
 import { modalAtom } from '@/state/atoms/modalAtom';
 
 import styles from './page.module.scss';
+import Image from "next/image";
 
 export default function Home() {
   const [popup] = useAtom(shortcutAtom);
@@ -27,8 +28,27 @@ export default function Home() {
   return (
     <div className={styles.page}>
       <main className={styles.main}>
-        <BackgroundImage objectFit="contain" src="/home-ai.png" priority />
-        <div className={styles.app}>Reclaim AI</div>
+        <BackgroundImage objectFit="contain" src="/back.png" priority />
+        <div className={styles.app}>
+          <Image
+            src="/reclaim-logo.png"
+            width={40}
+            priority
+            height={40}
+            alt="Reclaim AI"
+          />
+          Reclaim AI
+        </div>
+        <div className={styles.logos}>
+          <Image
+            src="/logo-pack.png"
+            width={668}
+            priority
+            height={842}
+            style={{ width: '100%', height: 'auto' }}
+            alt=""
+          />
+        </div>
       </main>
       <div className={styles.bottom}>
         <Button url="/login/start">Let’s start</Button>
