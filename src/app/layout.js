@@ -6,6 +6,7 @@ import Modal from '@/components/Modal';
 import AuthProvider from '@/state/contexts/authProvider';
 import StoreProvider from '@/state/atoms/storeProvider';
 import SwrProvider from '@/state/contexts/swrProvider';
+import PusherProvider from '@/state/contexts/pusherProvider';
 
 const geistSans = Geist({
   variable: '--font-geist-sans',
@@ -110,10 +111,12 @@ export default function RootLayout({ children }) {
       >
         <AuthProvider>
           <SwrProvider>
-            <StoreProvider>
-              {children}
-              <Modal />
-            </StoreProvider>
+            <PusherProvider>
+              <StoreProvider>
+                {children}
+                <Modal />
+              </StoreProvider>
+            </PusherProvider>
           </SwrProvider>
         </AuthProvider>
       </body>
