@@ -10,9 +10,7 @@ export const sendMessage = withAuthToken(async (token, formData) => {
 
   const api = new Chats();
 
-  const data = await api.sendMessage(token, formData);
-
-  return data;
+  return await api.sendMessage(token, formData);
 });
 
 export default sendMessage;

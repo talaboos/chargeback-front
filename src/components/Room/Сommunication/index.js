@@ -8,7 +8,7 @@ import { usePusher } from '@/state/contexts/pusherProvider';
 
 import styles from './communication.module.scss';
 
-export default function Communication({ data }) {
+export default function Communication({ data, id }) {
   const messageEndRef = useRef(null);
   const [messages] = useState(data);
   const [typing] = useState(false);
@@ -29,8 +29,9 @@ export default function Communication({ data }) {
   useEffect(() => {
     if (!pusher) return undefined;
     console.log('pusher', pusher);
-    // const channelName = `private-messages-${user}.chat-${id}`;
-    // const channel = pusher.subscribe(channelName);
+    const channelName = `messages.user-${id}`;
+    const channel = pusher.subscribe(channelName);
+    console.log('channel', channel);
     // channel.bind_global((event, res) => {
     //   if (event === 'message.sent' || event === 'message.received') {
     //     const { data: response } = res;
@@ -52,7 +53,7 @@ export default function Communication({ data }) {
     return () => {
       if (pusher) {
         pusher.disconnect();
-        //pusher.unsubscribe(channelName);
+        pusher.unsubscribe(channelName);
       }
     };
   }, [pusher]);

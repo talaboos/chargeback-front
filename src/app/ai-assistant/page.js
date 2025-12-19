@@ -57,7 +57,7 @@ export default async function Home() {
       </header>
       <main className={styles.main}>
         <div className={styles.content}>
-          <Communication data={sortData} id={id} user={2} />
+          <Communication data={sortData} id={id} />
           <Message id={id} />
         </div>
         <TapBar current="assistant" />
