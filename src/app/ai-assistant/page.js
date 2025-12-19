@@ -1,6 +1,12 @@
-//import TapBar from '@/components/TapBar';
+import { getServerSession } from 'next-auth';
+import { redirect } from 'next/navigation';
+
 import Communication from '@/components/Room/Сommunication';
 import Message from '@/components/Room/Message';
+import TapBar from '@/components/TapBar';
+
+import { authOptions } from '@/services/auth';
+import getChatHistory from '@/action/getChatHistory';
 
 import styles from './page.module.scss';
 
@@ -25,7 +31,25 @@ const sortData = [
   },
 ];
 
-export default function Home() {
+export default async function Home() {
+  const session = await getServerSession(authOptions);
+
+  if (!session) {
+    redirect('/login/2');
+  }
+
+  const { user } = session;
+
+  if (!user || !user?.id) {
+    redirect('/login/2');
+  }
+
+  const { id } = user;
+
+  const data = await getChatHistory(id);
+
+  console.log('data', data, id);
+
   return (
     <div className={styles.page}>
       <header className={styles.header}>
@@ -33,9 +57,10 @@ export default function Home() {
       </header>
       <main className={styles.main}>
         <div className={styles.content}>
-          <Communication data={sortData} id={1} user={2} />
-          <Message />
+          <Communication data={sortData} id={id} user={2} />
+          <Message id={id} />
         </div>
+        <TapBar current="assistant" />
       </main>
     </div>
   );

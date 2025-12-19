@@ -8,8 +8,9 @@ export default function BackgroundImage(props) {
       alt="Background image"
       blurDataURL={DEFAULT_BLUR_DATA_URL}
       placeholder="blur"
-      layout="fill"
-      objectFit="cover"
+      width={780}
+      height={1688}
+      style={{ objectFit: 'cover', position: 'absolute' }}
       {...props}
     />
   );

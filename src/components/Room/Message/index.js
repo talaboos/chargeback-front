@@ -4,16 +4,18 @@ import { useState } from 'react';
 
 import Input from '@/components/Controls/Input';
 
+import sendMessage from '@/action/sendMessage';
+
 import styles from './message.module.scss';
 
-export default function Message() {
+export default function Message({ id }) {
   const [typing, setTyping] = useState('');
   const [sending, setSending] = useState(false);
 
   const onSend = async () => {
     setSending(true);
-    //const { status } = await sendMessage({ content: typing, id });
-    const status = 'success';
+    const { status } = await sendMessage({ content: typing, id });
+    console.log('status', status);
     if (status === 'success') {
       setTyping('');
     }

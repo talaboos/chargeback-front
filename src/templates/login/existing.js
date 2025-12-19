@@ -38,9 +38,11 @@ export default function ExistingUser() {
 
       if (status === 'success') {
         const token = data?.access_token;
+        const id = data?.user_id;
         await signIn('credentials', {
           email,
           token,
+          id,
           redirect: true,
           callbackUrl: '/home',
         });
