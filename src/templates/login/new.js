@@ -31,10 +31,12 @@ export default function NewUser() {
       });
 
       if (status === 'success') {
+        const id = data?.user_id;
         const token = data?.access_token;
         await signIn('credentials', {
           email,
           token,
+          id,
           redirect: true,
           callbackUrl: '/onboarding/about',
         });

@@ -49,10 +49,10 @@ export default function Home() {
             alt=""
           />
         </div>
+        <div className={styles.bottom}>
+          <Button url="/login/start">Let’s start</Button>
+        </div>
       </main>
-      <div className={styles.bottom}>
-        <Button url="/login/start">Let’s start</Button>
-      </div>
     </div>
   );
 }
