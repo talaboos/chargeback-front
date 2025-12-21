@@ -19,7 +19,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata = {
-  title: 'Chargeback AI',
+  title: 'Reclaim AI',
   description: 'Smart subscription tracking',
 };
 
