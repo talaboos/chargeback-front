@@ -29,6 +29,48 @@ const sortData = [
     content: 'This is mock message 2',
     id: '3',
   },
+  {
+    message_type: 'txt',
+    sender_type: 'user',
+    content: 'This is mock message 2',
+    id: '4',
+  },
+  {
+    message_type: 'txt',
+    sender_type: 'user',
+    content: 'This is mock message 2',
+    id: '5',
+  },
+  {
+    message_type: 'txt',
+    sender_type: 'user',
+    content: 'This is mock message 2',
+    id: '6',
+  },
+  {
+    message_type: 'txt',
+    sender_type: 'user',
+    content: 'This is mock message 2',
+    id: '7',
+  },
+  {
+    message_type: 'txt',
+    sender_type: 'user',
+    content: 'This is mock message 2',
+    id: '8',
+  },
+  {
+    message_type: 'txt',
+    sender_type: 'user',
+    content: 'This is mock message 2',
+    id: '9',
+  },
+  {
+    message_type: 'txt',
+    sender_type: 'user',
+    content: 'This is mock message 2',
+    id: '10',
+  },
 ];
 
 export default async function Home() {

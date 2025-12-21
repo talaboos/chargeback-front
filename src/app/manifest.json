@@ -1,6 +1,6 @@
 {
-  "name": "Chargeback AI",
-  "short_name": "Chargeback",
+  "name": "Reclaim AI",
+  "short_name": "Reclaim",
   "description": "Smart subscription tracking",
   "start_url": "/",
   "background_color": "#398ef9",

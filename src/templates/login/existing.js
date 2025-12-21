@@ -102,7 +102,7 @@ export default function ExistingUser() {
   // };
 
   const onKeyPress = (e) => {
-    if (e.key === 'Enter' && password?.length >= 8) {
+    if (e.key === 'Enter' && password?.length >= 6) {
       onLoginEmail(e);
     }
   };
