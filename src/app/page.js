@@ -39,16 +39,7 @@ export default function Home() {
           />
           Reclaim AI
         </div>
-        <div className={styles.logos}>
-          <Image
-            src="/logo-pack.png"
-            width={668}
-            priority
-            height={842}
-            style={{ width: '100%', height: 'auto' }}
-            alt=""
-          />
-        </div>
+        <div className={styles.logos}></div>
         <div className={styles.bottom}>
           <Button url="/login/start">Let’s start</Button>
         </div>

@@ -25,9 +25,9 @@ export default function Home() {
 
   const onUploadScreen = async (file) => {
     startTransition(async () => {
-      const { success, message, data } = await uploadFile(file);
+      const { success, message, data: screen } = await uploadFile(file);
       if (success) {
-        setId(data.id);
+        setId(screen.id);
       } else {
         console.error(message || 'Something is wrong');
       }
@@ -48,12 +48,39 @@ export default function Home() {
               if (data?.status === 'completed')
                 return (
                   <div className={styles.tab}>
-                    {Object.entries(data.data).map(([key, value]) => (
-                      <div className={styles.line} key={key}>
-                        <div>{key.replace(/_/g, ' ')}:</div>
-                        <div>{value}</div>
-                      </div>
-                    ))}
+                    {(() => {
+                      const sub = data.data?.subscriptions;
+                      if (sub.length) {
+                        return sub.map((item) => {
+                          return Object.entries(item).map(([key, value]) => (
+                            <div
+                              className={styles.line}
+                              style={
+                                key === 'service_name'
+                                  ? {
+                                      margin: '15px 0',
+                                      color: '#fff',
+                                      background: '#6361f3',
+                                      borderRadius: '5px',
+                                    }
+                                  : {}
+                              }
+                              key={key}
+                            >
+                              <div>{key.replace(/_/g, ' ')}:</div>
+                              <div>{value}</div>
+                            </div>
+                          ));
+                        });
+                      } else {
+                        return (
+                          <div className={styles.result}>
+                            Could not get screenshot information. Try another
+                            one...
+                          </div>
+                        );
+                      }
+                    })()}
                   </div>
                 );
 
