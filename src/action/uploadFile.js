@@ -10,11 +10,7 @@ export const uploadFile = withAuthToken(async (token, formData) => {
 
   const files = new Files();
 
-  const data = await files.uploadFile(token, formData);
-
-  console.log('files', data);
-
-  return data;
+  return await files.uploadFile(token, formData);
 });
 
 export default uploadFile;

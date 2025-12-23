@@ -17,6 +17,22 @@ export class GPT extends Api {
 
     return data;
   }
+
+  async pusherAuth(token, query) {
+    const { ok, data } = await this.callAsync(`${REQUEST_URL}pusher/auth`, {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify(query),
+    });
+
+    if (!ok) {
+      return null;
+    }
+
+    return data;
+  }
 }
 
 export default GPT;

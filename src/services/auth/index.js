@@ -5,9 +5,9 @@ export const authOptions = {
     CredentialsProvider({
       name: 'Credentials',
       async authorize(credentials) {
-        const { email, token, id } = credentials;
+        const { email, token, id, chatId } = credentials;
 
-        const user = { email, token, id };
+        const user = { email, token, id, chatId };
 
         if (user) {
           return user;

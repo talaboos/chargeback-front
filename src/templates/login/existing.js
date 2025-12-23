@@ -35,14 +35,15 @@ export default function ExistingUser() {
         email,
         password,
       });
-
       if (status === 'success') {
         const token = data?.access_token;
         const id = data?.user_id;
+        const chatId = data?.chat_id;
         await signIn('credentials', {
           email,
           token,
           id,
+          chatId,
           redirect: true,
           callbackUrl: '/home',
         });

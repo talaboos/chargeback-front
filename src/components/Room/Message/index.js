@@ -15,7 +15,6 @@ export default function Message({ id }) {
   const onSend = async () => {
     setSending(true);
     const { status } = await sendMessage({ content: typing, id });
-    console.log('status', status);
     if (status === 'success') {
       setTyping('');
     }
