@@ -12,8 +12,6 @@ export const getChatHistory = withAuthToken(async (token, id) => {
 
   const data = await api.getHistoryChat(token, id);
 
-  console.log('0000', data);
-
   if (!data) {
     return null;
   }

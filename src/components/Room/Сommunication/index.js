@@ -8,10 +8,10 @@ import { usePusher } from '@/state/contexts/pusherProvider';
 
 import styles from './communication.module.scss';
 
-export default function Communication({ data, id }) {
+export default function Communication({ data, user }) {
   const messageEndRef = useRef(null);
-  const [messages] = useState(data);
-  const [typing] = useState(false);
+  const [messages, setMessages] = useState(data);
+  const [typing, setTyping] = useState(false);
   const { pusher, connectPusher } = usePusher();
 
   const scrollTobottom = async () => {
@@ -28,27 +28,21 @@ export default function Communication({ data, id }) {
 
   useEffect(() => {
     if (!pusher) return undefined;
-    console.log('pusher', pusher);
-    const channelName = `messages.user-${id}`;
+    const channelName = `private-messages.user-${user}`;
     const channel = pusher.subscribe(channelName);
-    console.log('channel', channel);
-    // channel.bind_global((event, res) => {
-    //   if (event === 'message.sent' || event === 'message.received') {
-    //     const { data: response } = res;
-    //
-    //     if (response.message_type === 'generated_photo' || response.message_type === 'error') {
-    //       setPending(id, '');
-    //     }
-    //
-    //     setMessages((prev) => [...prev, response]);
-    //   }
-    //   if (event === 'typing.started') {
-    //     setTyping(true);
-    //   }
-    //   if (event === 'typing.stopped') {
-    //     setTyping(false);
-    //   }
-    // });
+    channel.bind_global((event, res) => {
+      if (event === 'message.sent' || event === 'message.received') {
+        const { data: response } = res;
+
+        setMessages((prev) => [...prev, response]);
+      }
+      if (event === 'typing.started') {
+        setTyping(true);
+      }
+      if (event === 'typing.stopped') {
+        setTyping(false);
+      }
+    });
 
     return () => {
       if (pusher) {
@@ -63,7 +57,26 @@ export default function Communication({ data, id }) {
       {messages.map((message) => (
         <Fragment key={message.id}>
           {(() => {
-            if (message.message_type !== 'error')
+            if (
+              message.message_type !== 'error' &&
+              message.message_type === 'chat_response' &&
+              message.sender_type === 'ai'
+            )
+              return (
+                <div
+                  className={`${styles.message} ${message.sender_type === 'user' && styles.user}`}
+                >
+                  {JSON.parse(message.content).text}
+                </div>
+              );
+
+            return null;
+          })()}
+          {(() => {
+            if (
+              message.message_type !== 'error' &&
+              message.message_type === 'text'
+            )
               return (
                 <div
                   className={`${styles.message} ${message.sender_type === 'user' && styles.user}`}

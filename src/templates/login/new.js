@@ -33,10 +33,12 @@ export default function NewUser() {
       if (status === 'success') {
         const id = data?.user_id;
         const token = data?.access_token;
+        const chatId = data?.chat_id;
         await signIn('credentials', {
           email,
           token,
           id,
+          chatId,
           redirect: true,
           callbackUrl: '/onboarding/about',
         });

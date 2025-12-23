@@ -10,69 +10,6 @@ import getChatHistory from '@/action/getChatHistory';
 
 import styles from './page.module.scss';
 
-const sortData = [
-  {
-    message_type: 'txt',
-    sender_type: 'user',
-    content: 'This is mock message',
-    id: '1',
-  },
-  {
-    message_type: 'txt',
-    sender_type: 'bot',
-    content: 'This is mock answer',
-    id: '2',
-  },
-  {
-    message_type: 'txt',
-    sender_type: 'user',
-    content: 'This is mock message 2',
-    id: '3',
-  },
-  {
-    message_type: 'txt',
-    sender_type: 'user',
-    content: 'This is mock message 2',
-    id: '4',
-  },
-  {
-    message_type: 'txt',
-    sender_type: 'user',
-    content: 'This is mock message 2',
-    id: '5',
-  },
-  {
-    message_type: 'txt',
-    sender_type: 'user',
-    content: 'This is mock message 2',
-    id: '6',
-  },
-  {
-    message_type: 'txt',
-    sender_type: 'user',
-    content: 'This is mock message 2',
-    id: '7',
-  },
-  {
-    message_type: 'txt',
-    sender_type: 'user',
-    content: 'This is mock message 2',
-    id: '8',
-  },
-  {
-    message_type: 'txt',
-    sender_type: 'user',
-    content: 'This is mock message 2',
-    id: '9',
-  },
-  {
-    message_type: 'txt',
-    sender_type: 'user',
-    content: 'This is mock message 2',
-    id: '10',
-  },
-];
-
 export default async function Home() {
   const session = await getServerSession(authOptions);
 
@@ -82,15 +19,20 @@ export default async function Home() {
 
   const { user } = session;
 
-  if (!user || !user?.id) {
+  if (!user || !user?.chatId || !user?.id) {
     redirect('/login/2');
   }
 
-  const { id } = user;
+  const { chatId, id } = user;
 
-  const data = await getChatHistory(id);
+  const { data } = await getChatHistory(chatId);
 
-  console.log('data', data, id);
+  const sortData = data.sort((a, b) => {
+    if (a.id < b.id) return -1;
+    if (a.id > b.id) return 1;
+
+    return 0;
+  });
 
   return (
     <div className={styles.page}>
@@ -99,8 +41,8 @@ export default async function Home() {
       </header>
       <main className={styles.main}>
         <div className={styles.content}>
-          <Communication data={sortData} id={id} />
-          <Message id={id} />
+          <Communication data={sortData} user={id} />
+          <Message id={chatId} />
         </div>
         <TapBar current="assistant" />
       </main>
