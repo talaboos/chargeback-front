@@ -25,19 +25,19 @@ export default function ShortcutModal() {
 
   return (
     <div className={styles.shortcut}>
-      <div className={styles.heading}>Add Application to Your Home Screen</div>
+      <div className={styles.heading}>Add Reclaim AI to Your Home Screen</div>
       <main className={styles.main}>
         <div className={styles.content}>
           <div className={styles.chat}>
             <Image
-              src="/ai-avatar.png"
+              src="/apple-icon-114x114.png"
               width={52}
               priority
               height={52}
               alt="AI assistant"
             />
             <div>
-              Hi, I&apos;m your AI assistant — always here, just one tap away 😊
+              Hi, I&apos;m your Reclaim AI — always here, just one tap away 😊
             </div>
           </div>
           <div className={styles.instructions}>
