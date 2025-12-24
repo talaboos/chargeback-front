@@ -1,18 +1,20 @@
 'use client';
 
-import { useState, useTransition } from 'react';
+import { useTransition } from 'react';
+import { useAtom } from 'jotai/index';
 
 import TapBar from '@/components/TapBar';
 import UploadImage from '@/components/UploadImage';
 
 import { uploadFile } from '@/action/uploadFile';
 import useFetch from '@/hooks/useFetch';
+import { idAtom } from '@/state/atoms/idAtom';
 
 import styles from './page.module.scss';
 
 export default function Home() {
   const [isPending, startTransition] = useTransition();
-  const [id, setId] = useState(null);
+  const [id, setId] = useAtom(idAtom);
   const { data } = useFetch(id ? `/api/gpt?id=${id}` : null, {
     refreshInterval: (res) => {
       if (res && res.status === 'completed') {
@@ -86,8 +88,7 @@ export default function Home() {
 
               return (
                 <div className={styles.about}>
-                  Upload screenshots of
-                  <br /> subscriptions to get information
+                  Upload a screenshot with you subscriptions or any other bills
                 </div>
               );
             })()}

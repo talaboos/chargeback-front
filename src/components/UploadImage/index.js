@@ -61,7 +61,7 @@ export default function UploadImage({ onChange = () => {}, pending = false }) {
             />
           </defs>
         </svg>
-        {pending ? 'Uploading screenshots...' : 'Add a Screen'}
+        {pending ? 'Attaching a file...' : 'Attach a file'}
       </label>
     </div>
   );
