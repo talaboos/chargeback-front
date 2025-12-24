@@ -36,10 +36,40 @@ export default function Home() {
               </Link>
             </li>
             <li>
-              <Link href="/privacy-policy">Privacy Policy</Link>
+              <a
+                href="https://reclaim.tools/privacy"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                Privacy Policy
+              </a>
             </li>
             <li>
-              <Link href="/terms-of-service">Terms of Use</Link>
+              <a
+                href="https://reclaim.tools/terms"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                Terms of Use
+              </a>
+            </li>
+            <li>
+              <a
+                href="https://reclaim.tools/subscription-policy"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                Subscription Policy
+              </a>
+            </li>
+            <li>
+              <a
+                href="https://reclaim.tools/cookie-policy"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                Cookie Policy
+              </a>
             </li>
           </ul>
         </div>
