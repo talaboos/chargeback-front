@@ -1,6 +1,7 @@
 import { useState, useTransition } from 'react';
 import Image from 'next/image';
 import { signIn } from 'next-auth/react';
+import { sendGTMEvent } from '@next/third-parties/google';
 
 import Button from '@/components/Controls/Buttons/button';
 import Input from '@/components/Controls/Input';
@@ -39,6 +40,7 @@ export default function ExistingUser() {
         const token = data?.access_token;
         const id = data?.user_id;
         const chatId = data?.chat_id;
+        sendGTMEvent({ event: 'user_login', email: email });
         await signIn('credentials', {
           email,
           token,
