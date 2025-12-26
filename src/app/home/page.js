@@ -2,6 +2,7 @@
 
 import { useTransition } from 'react';
 import { useAtom } from 'jotai/index';
+import { sendGTMEvent } from '@next/third-parties/google';
 
 import TapBar from '@/components/TapBar';
 import UploadImage from '@/components/UploadImage';
@@ -18,6 +19,8 @@ export default function Home() {
   const { data } = useFetch(id ? `/api/gpt?id=${id}` : null, {
     refreshInterval: (res) => {
       if (res && res.status === 'completed') {
+        sendGTMEvent({ event: 'user_file_get_data' });
+
         return 0;
       }
 
@@ -27,6 +30,7 @@ export default function Home() {
 
   const onUploadScreen = async (file) => {
     startTransition(async () => {
+      sendGTMEvent({ event: 'user_file_attached' });
       const { success, message, data: screen } = await uploadFile(file);
       if (success) {
         setId(screen.id);

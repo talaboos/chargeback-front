@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { sendGTMEvent } from '@next/third-parties/google';
 
 import Input from '@/components/Controls/Input';
 
@@ -14,6 +15,7 @@ export default function Message({ id }) {
 
   const onSend = async () => {
     setSending(true);
+    sendGTMEvent({ event: 'user_ai_chat' });
     const { status } = await sendMessage({ content: typing, id });
     if (status === 'success') {
       setTyping('');
