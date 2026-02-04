@@ -28,8 +28,7 @@ const nextConfig = {
     ],
   },
   env: {
-    NEXTAUTH_SECRET: 'DA7yaoTFT5Gl5czkmkT34FLvFtPqcRm05NVkYqTJPQE=',
-    NEXTAUTH_URL: process.env.NEXT_PUBLIC_NEXTAUTH_URL
+    NEXTAUTH_SECRET: process.env.NEXTAUTH_SECRET,
   },
 };
 
