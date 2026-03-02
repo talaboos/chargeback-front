@@ -41,7 +41,7 @@ export default function Home() {
         </div>
         <div className={styles.logos}></div>
         <div className={styles.bottom}>
-          <Button url="/login/start">Let’s start</Button>
+          <Button url="/login/verification">Let’s start</Button>
         </div>
       </main>
     </div>
