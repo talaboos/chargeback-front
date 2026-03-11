@@ -35,9 +35,9 @@ export default function Home() {
             width={40}
             priority
             height={40}
-            alt="Reclaim AI"
+            alt="Reclaim Tool"
           />
-          Reclaim AI
+          Reclaim Tool
         </div>
         <div className={styles.logos}></div>
         <div className={styles.bottom}>

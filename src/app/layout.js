@@ -20,7 +20,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata = {
-  title: 'Reclaim AI',
+  title: 'Reclaim Tool',
   description: 'Smart subscription tracking',
 };
 
