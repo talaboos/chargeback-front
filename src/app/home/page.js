@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useAtom } from 'jotai/index';
 import { sendGTMEvent } from '@next/third-parties/google';
 
@@ -14,7 +14,25 @@ import styles from './page.module.scss';
 
 export default function Home() {
   const [menuOpen, setMenuOpen] = useState(false);
+  const [historyLoaded, setHistoryLoaded] = useState(false);
   const [id, setId] = useAtom(idAtom);
+
+  useEffect(() => {
+    if (!id) {
+      fetch('/api/history')
+        .then((res) => res.json())
+        .then((data) => {
+          if (data?.lastResultId) {
+            setId(data.lastResultId);
+          }
+        })
+        .catch(() => {})
+        .finally(() => setHistoryLoaded(true));
+    } else {
+      setHistoryLoaded(true);
+    }
+  }, [id, setId]);
+
   const { data } = useFetch(id ? `/api/gpt?id=${id}` : null, {
     refreshInterval: (res) => {
       if (res && res.status === 'completed') {
@@ -43,6 +61,8 @@ export default function Home() {
         <div className={styles.content}>
           <div className={styles.info}>
             {(() => {
+              if (!historyLoaded)
+                return <div className={styles.loading}>Loading...</div>;
               if (data?.status === 'processing')
                 return <div className={styles.loading}>Processing...</div>;
               if (data?.status === 'completed')
