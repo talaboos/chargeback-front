@@ -34,13 +34,14 @@ export default function NewUser() {
         const id = data?.user_id;
         const token = data?.access_token;
         const chatId = data?.chat_id;
+        localStorage.setItem('hasLoggedIn', 'true');
         await signIn('credentials', {
           email,
           token,
           id,
           chatId,
           redirect: true,
-          callbackUrl: '/onboarding/about',
+          callbackUrl: '/home',
         });
       } else {
         setError(message || 'Something went wrong');
@@ -89,7 +90,7 @@ export default function NewUser() {
         </form>
       </div>
       <Button
-        url="/onboarding/about"
+        url="/home"
         onClick={(e) => onRegisterEmail(e)}
         tabIndex={!password || password?.length < 8 ? '-1' : '0'}
         loading={isPending}

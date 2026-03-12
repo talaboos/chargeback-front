@@ -1,21 +1,36 @@
 'use client';
 
-import { useTransition } from 'react';
+import { useEffect, useTransition } from 'react';
 import { useAtom } from 'jotai/index';
 import { sendGTMEvent } from '@next/third-parties/google';
 
 import TapBar from '@/components/TapBar';
 import UploadImage from '@/components/UploadImage';
+import ShortcutModal from '@/components/Modal/shortcut';
 
 import { uploadFile } from '@/action/uploadFile';
 import useFetch from '@/hooks/useFetch';
 import { idAtom } from '@/state/atoms/idAtom';
+import { shortcutAtom } from '@/state/atoms/shortcutAtom';
+import { modalAtom } from '@/state/atoms/modalAtom';
 
 import styles from './page.module.scss';
 
 export default function Home() {
   const [isPending, startTransition] = useTransition();
   const [id, setId] = useAtom(idAtom);
+  const [popup] = useAtom(shortcutAtom);
+  const [, setModal] = useAtom(modalAtom);
+
+  useEffect(() => {
+    if (popup) {
+      setModal({
+        type: 'window',
+        open: true,
+        content: <ShortcutModal />,
+      });
+    }
+  }, [popup, setModal]);
   const { data } = useFetch(id ? `/api/gpt?id=${id}` : null, {
     refreshInterval: (res) => {
       if (res && res.status === 'completed') {

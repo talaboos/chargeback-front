@@ -29,6 +29,26 @@
   }
 }
 
+.label {
+  display: block;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 20px;
+  color: #80808A;
+  padding-bottom: 8px;
+  position: static;
+  width: auto;
+  height: auto;
+  top: auto;
+  transform: none;
+  right: auto;
+  cursor: default;
+
+  img {
+    display: none;
+  }
+}
+
 // user
 
 .password {

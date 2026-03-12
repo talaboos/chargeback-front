@@ -20,8 +20,7 @@ const pages = {
     templates: <Login />,
   },
   verification: {
-    heading: 'Enter your email to log in',
-    subheading: 'Your email will not be shared or used for marketing purposes.',
+    heading: 'Get Started',
     templates: <Email />,
   },
   signin: {

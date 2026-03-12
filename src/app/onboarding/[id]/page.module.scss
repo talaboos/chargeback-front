@@ -10,43 +10,8 @@
   position: relative;
 }
 
-.header {
-  padding: 16px 0 0;
-  position: relative;
-  z-index: 5;
-
-  button {
-    position: absolute;
-    margin-top: 6px;
-  }
-}
-
-.heading {
-  font-size: 24px;
-  font-style: normal;
-  font-weight: 700;
-  line-height: 28px;
-  text-align: center;
-  color: #1A1A2E;
-  padding: 24px 0 10px;
-  white-space: break-spaces;
-
-  span {
-    display: block;
-    color: #80808A;
-    font-size: 16px;
-    font-style: normal;
-    font-weight: 500;
-    line-height: normal;
-    letter-spacing: -0.32px;
-    padding-top: 8px;
-    white-space: break-spaces;
-  }
-}
-
 .main {
   margin: 0 auto;
-  padding-bottom: 25px;
   width: 100%;
   max-width: 400px;
   display: flex;
