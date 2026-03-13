@@ -18,6 +18,22 @@ export class GPT extends Api {
     return data;
   }
 
+  async getLastResult(token, chatId) {
+    const { ok, data } = await this.callAsync(
+      `${REQUEST_URL}chats/${chatId}/messages?per_page=50`,
+      {
+        method: 'GET',
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      },
+    );
+
+    if (!ok || !data) return null;
+
+    return data;
+  }
+
   async pusherAuth(token, query) {
     const { ok, data } = await this.callAsync(`${REQUEST_URL}pusher/auth`, {
       method: 'POST',
