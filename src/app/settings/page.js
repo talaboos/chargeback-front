@@ -32,7 +32,7 @@ export default function Home() {
           <ul className={styles.menu}>
             <li>
               <Link href="/shortcut" onClick={onShortcut}>
-                Add Reclaim AI shortcut
+                Add Reclaim Tool shortcut
               </Link>
             </li>
             <li>

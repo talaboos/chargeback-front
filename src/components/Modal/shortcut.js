@@ -25,7 +25,7 @@ export default function ShortcutModal() {
 
   return (
     <div className={styles.shortcut}>
-      <div className={styles.heading}>Add Reclaim AI to Your Home Screen</div>
+      <div className={styles.heading}>Add Reclaim Tool to Your Home Screen</div>
       <main className={styles.main}>
         <div className={styles.content}>
           <div className={styles.chat}>
@@ -37,7 +37,7 @@ export default function ShortcutModal() {
               alt="AI assistant"
             />
             <div>
-              Hi, I&apos;m your Reclaim AI — always here, just one tap away 😊
+              Hi, I&apos;m your Reclaim Tool — always here, just one tap away 😊
             </div>
           </div>
           <div className={styles.instructions}>
