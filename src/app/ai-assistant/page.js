@@ -25,7 +25,8 @@ export default async function Home() {
 
   const { chatId, id } = user;
 
-  const { data } = await getChatHistory(chatId);
+  const response = await getChatHistory(chatId);
+  const data = response?.data ?? [];
 
   const sortData = data.sort((a, b) => {
     if (a.id < b.id) return -1;
