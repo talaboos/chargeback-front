@@ -25,25 +25,6 @@
   align-items: center;
   justify-content: center;
   position: relative;
-
-  div {
-    svg {
-      display: block;
-    }
-  }
-}
-
-.heading {
-  position: absolute;
-  top: 8px;
-  text-align: center;
-  width: calc(100% - 48px);
-  font-size: 16px;
-  font-style: normal;
-  font-weight: 700;
-  line-height: normal;
-  letter-spacing: -0.32px;
-  color: #000;
 }
 
 .main {
@@ -52,92 +33,22 @@
   max-width: 400px;
   display: flex;
   flex-direction: column;
-  align-items: center;
-  flex: 1 1 auto;
-  position: relative;
-}
-
-.content {
-  position: relative;
-  z-index: 2;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  overflow: hidden;
-  width: 100%;
-  flex: 1 0 auto;
-  padding-top: 10px;
-}
-
-.buttons {
-  padding: 16px 0;
-  display: flex;
-  align-items: center;
-  gap: 10px;
-
-  button {
-    border-radius: 16px;
-    background: #F4F4F4;
-    border: none;
-    display: flex;
-    align-items: center;
-    padding: 0 16px;
-    gap: 8px;
-    height: 34px;
-    width: fit-content;
-    font-size: 16px;
-    font-style: normal;
-    font-weight: 500;
-    line-height: normal;
-    letter-spacing: -0.32px;
-    color: #000;
-
-    svg {
-      display: block;
-    }
-  }
-
-  a {
-    border-radius: 16px;
-    background: #6361F3;
-    border: none;
-    display: flex;
-    width: fit-content;
-    align-items: center;
-    padding: 0 16px;
-    gap: 8px;
-    height: 34px;
-    font-size: 16px;
-    font-style: normal;
-    font-weight: 500;
-    line-height: normal;
-    letter-spacing: -0.32px;
-    color: #fff;
-
-    svg {
-      display: block;
-    }
-  }
-}
-
-.info {
-  width: 100%;
-  height: 1px;
+  flex: 1 1 0;
   overflow-y: auto;
-  flex: 1 1 auto;
   scrollbar-width: none;
   -ms-overflow-style: none;
-  display: flex;
-  align-items: center;
-  flex-direction: column;
-  gap: 16px;
+  padding-bottom: 16px;
 
   &::-webkit-scrollbar {
-    width: 0;
-    height: 0;
     display: none;
   }
+}
+
+.loaderWrap {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: 1;
 }
 
 @keyframes move {
@@ -168,41 +79,58 @@
   }
 }
 
-.tab {
-  .result {
-    text-align: center;
-  }
-
-  .line {
-    display: flex;
-    justify-content: flex-start;
-    align-items: center;
-    border-bottom: 1px solid #f1f1f1;
-
-    div {
-      padding: 3px 10px;
-    }
-
-    div:nth-child(1) {
-      font-weight: bold;
-
-      &::first-letter {
-        text-transform: uppercase;
-      }
-    }
-
-    div:nth-child(2) {
-      padding-left: 5px;
-    }
-  }
+// Total card
+.totalCard {
+  background: linear-gradient(135deg, #6361F3 0%, #8B5CF6 100%);
+  border-radius: 20px;
+  padding: 24px;
+  margin: 16px 0;
+  color: #fff;
 }
 
-.about {
+.totalLabel {
+  font-size: 14px;
+  font-weight: 500;
+  opacity: 0.85;
+  margin-bottom: 4px;
+}
+
+.totalAmount {
+  font-size: 36px;
+  font-weight: 800;
+  line-height: 44px;
+  letter-spacing: -1px;
+}
+
+.totalSub {
+  font-size: 13px;
+  font-weight: 400;
+  opacity: 0.7;
+  margin-top: 4px;
+}
+
+// Subscription list
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+// Content (for empty state)
+.content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  flex: 1;
+  width: 100%;
+}
+
+.info {
+  width: 100%;
   display: flex;
   align-items: center;
-  text-align: center;
-  height: 100%;
-  font-size: 25px;
+  flex-direction: column;
 }
 
 .emptyState {
@@ -236,9 +164,14 @@
   max-width: 280px;
 }
 
+.tapbarWrap {
+  margin: 0 -24px;
+  flex-shrink: 0;
+}
+
 .fab {
   position: absolute;
-  bottom: 72px;
+  bottom: 68px;
   right: 0;
   width: 56px;
   height: 56px;
@@ -257,4 +190,3 @@
     transform: scale(0.92);
   }
 }
-
