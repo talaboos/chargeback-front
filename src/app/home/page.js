@@ -6,9 +6,12 @@ import { sendGTMEvent } from '@next/third-parties/google';
 
 import TapBar from '@/components/TapBar';
 import AddSourceMenu from '@/components/AddSourceMenu';
+import ShortcutModal from '@/components/Modal/shortcut';
 
 import useFetch from '@/hooks/useFetch';
 import { idAtom } from '@/state/atoms/idAtom';
+import { shortcutAtom } from '@/state/atoms/shortcutAtom';
+import { modalAtom } from '@/state/atoms/modalAtom';
 
 import styles from './page.module.scss';
 
@@ -16,6 +19,8 @@ export default function Home() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [historyLoaded, setHistoryLoaded] = useState(false);
   const [id, setId] = useAtom(idAtom);
+  const [popup] = useAtom(shortcutAtom);
+  const [, setModal] = useAtom(modalAtom);
 
   useEffect(() => {
     if (!id) {
@@ -32,6 +37,16 @@ export default function Home() {
       setHistoryLoaded(true);
     }
   }, [id, setId]);
+
+  useEffect(() => {
+    if (popup) {
+      setModal({
+        type: 'window',
+        open: true,
+        content: <ShortcutModal />,
+      });
+    }
+  }, [popup, setModal]);
 
   const { data } = useFetch(id ? `/api/gpt?id=${id}` : null, {
     refreshInterval: (res) => {

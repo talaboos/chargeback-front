@@ -46,7 +46,14 @@ export default function Email() {
     e.stopPropagation();
     setError(null);
     startTransition(async () => {
-      const { data, status } = await checkAuth(email);
+      const result = await checkAuth(email);
+
+      if (!result) {
+        setError('Something went wrong');
+        return;
+      }
+
+      const { data, status } = result;
 
       if (status === 'success') {
         setAnswer('email', email);
@@ -55,7 +62,7 @@ export default function Email() {
         } else if (data.status === 'password_required') {
           router.push('/login/signup');
         } else if (data.status === 'absent') {
-          setError('No subscription');
+          setError('User not found');
         } else {
           setError('Your subscription is not active.');
         }
@@ -76,9 +83,10 @@ export default function Email() {
       <div className={styles.content}>
         <form className={styles.form}>
           <label htmlFor="s1">
+            <span className={styles.label}>Enter your email to continue</span>
             <Input
               id="s1"
-              placeholder="Your email"
+              placeholder="Enter your email from previous step"
               autoCapitalize="none"
               onKeyPress={onKeyPress}
               onChange={(v) => setEmail(v)}

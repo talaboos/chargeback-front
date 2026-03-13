@@ -41,6 +41,7 @@ export default function ExistingUser() {
         const id = data?.user_id;
         const chatId = data?.chat_id;
         sendGTMEvent({ event: 'user_login', email: email });
+        localStorage.setItem('hasLoggedIn', 'true');
         await signIn('credentials', {
           email,
           token,
