@@ -7,9 +7,9 @@ export const getTokenFromHeader = async () => {
     headers: Object.fromEntries(await headers()),
     cookies: Object.fromEntries(cook.getAll().map((c) => [c.name, c.value])),
   };
-  const { token } = await getToken({ req });
+  const data = await getToken({ req });
 
-  return token;
+  return data?.token ?? null;
 };
 
 export default getTokenFromHeader;

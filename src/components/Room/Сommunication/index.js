@@ -66,7 +66,7 @@ export default function Communication({ data, user }) {
                 <div
                   className={`${styles.message} ${message.sender_type === 'user' && styles.user}`}
                 >
-                  {JSON.parse(message.content).text}
+                  {(() => { try { return JSON.parse(message.content).text; } catch { return message.content; } })()}
                 </div>
               );
 
