@@ -71,6 +71,11 @@ export default function Home() {
                 Cookie Policy
               </a>
             </li>
+            <li>
+              <a href="mailto:support@reclaim.tools?subject=Cancel%20subscription">
+                Unsubscribe
+              </a>
+            </li>
           </ul>
         </div>
         <TapBar current="settings" />
