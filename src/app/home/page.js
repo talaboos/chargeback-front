@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import { useAtom } from 'jotai/index';
 import { sendGTMEvent } from '@next/third-parties/google';
 
@@ -8,6 +8,7 @@ import TapBar from '@/components/TapBar';
 import AddSourceMenu from '@/components/AddSourceMenu';
 import ShortcutModal from '@/components/Modal/shortcut';
 import SubscriptionCard from '@/components/SubscriptionCard';
+import SubscriptionDetail from '@/components/SubscriptionDetail';
 
 import useFetch from '@/hooks/useFetch';
 import { idAtom } from '@/state/atoms/idAtom';
@@ -27,6 +28,7 @@ function formatTotal(amount, currency) {
 
 export default function Home() {
   const [menuOpen, setMenuOpen] = useState(false);
+  const [selectedSub, setSelectedSub] = useState(null);
   const [id, setId] = useAtom(idAtom);
   const [popup] = useAtom(shortcutAtom);
   const [, setModal] = useAtom(modalAtom);
@@ -49,6 +51,7 @@ export default function Home() {
   const subscriptions = subsData?.data || [];
   const totalMonthly = subsData?.total_monthly || 0;
   const currency = subsData?.currency || 'USD';
+  const totalsByCurrency = subsData?.totals_by_currency || {};
 
   const handleCancel = useCallback(
     async (subId) => {
@@ -65,11 +68,50 @@ export default function Home() {
     [mutate],
   );
 
+  const [processing, setProcessing] = useState(false);
+  const pollRef = useRef(null);
+
+  const pollForResult = useCallback(
+    (messageId) => {
+      setProcessing(true);
+      let attempts = 0;
+      const maxAttempts = 30; // 30 * 2s = 60s max
+
+      pollRef.current = setInterval(async () => {
+        attempts++;
+        try {
+          const res = await fetch(`/api/gpt?id=${messageId}`);
+          if (res.ok) {
+            const json = await res.json();
+            if (json.status === 'completed' || json.status === 'success') {
+              clearInterval(pollRef.current);
+              setProcessing(false);
+              mutate(); // refresh subscriptions list
+            }
+          }
+        } catch {}
+
+        if (attempts >= maxAttempts) {
+          clearInterval(pollRef.current);
+          setProcessing(false);
+          mutate(); // try refresh anyway
+        }
+      }, 2000);
+    },
+    [mutate],
+  );
+
+  useEffect(() => {
+    return () => {
+      if (pollRef.current) clearInterval(pollRef.current);
+    };
+  }, []);
+
   const handleUploadComplete = (result) => {
     if (result?.data?.id) {
       sendGTMEvent({ event: 'user_file_attached' });
       setId(result.data.id);
-      mutate();
+      pollForResult(result.data.id);
     }
   };
 
@@ -82,6 +124,10 @@ export default function Home() {
         {loading ? (
           <div className={styles.loaderWrap}>
             <div className={styles.loading}>Loading...</div>
+          </div>
+        ) : processing ? (
+          <div className={styles.loaderWrap}>
+            <div className={styles.loading}>Analyzing your screenshot...</div>
           </div>
         ) : subscriptions.length === 0 ? (
           <div className={styles.content}>
@@ -116,6 +162,15 @@ export default function Home() {
               <div className={styles.totalAmount}>
                 {formatTotal(totalMonthly, currency)}
               </div>
+              {Object.keys(totalsByCurrency).length > 1 && (
+                <div className={styles.totalOther}>
+                  {Object.entries(totalsByCurrency)
+                    .filter(([cur]) => cur !== currency)
+                    .map(([cur, amount]) => (
+                      <span key={cur}>+ {formatTotal(amount, cur)}</span>
+                    ))}
+                </div>
+              )}
               <div className={styles.totalSub}>
                 {subscriptions.filter((s) => s.status === 'active').length}{' '}
                 active subscription
@@ -129,7 +184,7 @@ export default function Home() {
                 <SubscriptionCard
                   key={sub.id}
                   subscription={sub}
-                  onCancel={handleCancel}
+                  onClick={() => setSelectedSub(sub)}
                 />
               ))}
             </div>
@@ -165,6 +220,16 @@ export default function Home() {
       <div className={styles.tapbarWrap}>
         <TapBar current="home" />
       </div>
+      {selectedSub && (
+        <SubscriptionDetail
+          subscription={selectedSub}
+          onCancel={handleCancel}
+          onClose={() => {
+            setSelectedSub(null);
+            mutate();
+          }}
+        />
+      )}
     </div>
   );
 }

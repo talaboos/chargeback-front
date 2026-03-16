@@ -15,7 +15,7 @@ function formatDate(dateStr) {
 
 function formatAmount(amount, currency) {
   const num = parseFloat(amount);
-  if (isNaN(num)) return '$0.00';
+  if (isNaN(num) || num === 0) return '—';
   return new Intl.NumberFormat('en-US', {
     style: 'currency',
     currency: currency || 'USD',
@@ -26,23 +26,22 @@ function getInitial(name) {
   return name ? name.charAt(0).toUpperCase() : '?';
 }
 
-const LOGO_STAGE_CLEARBIT = 0;
-const LOGO_STAGE_GOOGLE = 1;
+const LOGO_STAGE_GOOGLE = 0;
+const LOGO_STAGE_CLEARBIT = 1;
 const LOGO_STAGE_FALLBACK = 2;
 
 function getLogoSrc(domain, stage) {
-  if (stage === LOGO_STAGE_CLEARBIT && domain) {
-    return `https://logo.clearbit.com/${domain}`;
-  }
   if (stage === LOGO_STAGE_GOOGLE && domain) {
     return `https://www.google.com/s2/favicons?domain=${domain}&sz=128`;
+  }
+  if (stage === LOGO_STAGE_CLEARBIT && domain) {
+    return `https://logo.clearbit.com/${domain}`;
   }
   return null;
 }
 
-export default function SubscriptionCard({ subscription, onCancel }) {
-  const [logoStage, setLogoStage] = useState(LOGO_STAGE_CLEARBIT);
-  const [cancelling, setCancelling] = useState(false);
+export default function SubscriptionCard({ subscription, onClick }) {
+  const [logoStage, setLogoStage] = useState(LOGO_STAGE_GOOGLE);
   const isCancelled = subscription.status === 'cancelled';
   const domain = subscription.service_domain;
 
@@ -50,20 +49,15 @@ export default function SubscriptionCard({ subscription, onCancel }) {
     setLogoStage((prev) => prev + 1);
   };
 
-  const handleCancel = async () => {
-    if (cancelling || isCancelled) return;
-    setCancelling(true);
-    try {
-      await onCancel(subscription.id);
-    } finally {
-      setCancelling(false);
-    }
-  };
-
   const logoSrc = getLogoSrc(domain, logoStage);
 
   return (
-    <div className={`${styles.card} ${isCancelled ? styles.cancelled : ''}`}>
+    <div
+      className={`${styles.card} ${isCancelled ? styles.cancelled : ''}`}
+      onClick={onClick}
+      role="button"
+      tabIndex={0}
+    >
       <div className={styles.logo}>
         {logoSrc ? (
           <img
@@ -93,15 +87,6 @@ export default function SubscriptionCard({ subscription, onCancel }) {
         </div>
         <div className={styles.cycle}>/{subscription.billing_cycle}</div>
       </div>
-      {!isCancelled && (
-        <button
-          className={styles.cancelBtn}
-          onClick={handleCancel}
-          disabled={cancelling}
-        >
-          {cancelling ? '...' : 'Cancel'}
-        </button>
-      )}
     </div>
   );
 }

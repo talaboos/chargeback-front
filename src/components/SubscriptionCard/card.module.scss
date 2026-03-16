@@ -7,7 +7,12 @@
   border-radius: 16px;
   border: 1px solid #F0F0F0;
   width: 100%;
-  transition: opacity 0.2s;
+  cursor: pointer;
+  transition: opacity 0.2s, background 0.15s;
+
+  &:active {
+    background: #FAFAFA;
+  }
 }
 
 .cancelled {
