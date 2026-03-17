@@ -2,21 +2,22 @@
   display: flex;
   align-items: center;
   gap: 12px;
-  padding: 12px 0;
+  padding: 11px 0;
   cursor: pointer;
+  min-height: 44px; // iOS minimum tap target
 }
 
 .cancelled {
-  opacity: 0.55;
+  opacity: 0.5;
 }
 
 .logo {
   flex-shrink: 0;
   width: 40px;
   height: 40px;
-  border-radius: 10px;
+  border-radius: 9px;
   overflow: hidden;
-  background: #F4F4F4;
+  background: var(--secondary-system-background);
 
   img {
     width: 100%;
@@ -32,9 +33,9 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 18px;
-  font-weight: 700;
-  color: #6361F3;
+  font-size: 17px;
+  font-weight: 600;
+  color: var(--system-blue);
   background: #F0F0FF;
 }
 
@@ -43,46 +44,53 @@
   min-width: 0;
 }
 
+// iOS body style
 .name {
-  font-size: 15px;
-  font-weight: 600;
-  color: #1A1A2E;
-  line-height: 20px;
+  font-size: 17px;
+  font-weight: 400;
+  letter-spacing: -0.41px;
+  line-height: 22px;
+  color: var(--label-primary);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
 
+// iOS footnote style
 .sub {
   font-size: 13px;
   font-weight: 400;
-  color: #94949E;
+  letter-spacing: -0.08px;
   line-height: 18px;
+  color: var(--label-secondary);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
 
 .expiring {
-  color: #E53935;
+  color: var(--system-red);
 }
 
 .right {
   display: flex;
   align-items: center;
-  gap: 4px;
+  gap: 6px;
   flex-shrink: 0;
 }
 
+// iOS subheadline style
 .amount {
   font-size: 15px;
-  font-weight: 600;
-  color: #94949E;
+  font-weight: 400;
+  letter-spacing: -0.24px;
   line-height: 20px;
+  color: var(--label-secondary);
 }
 
 .chevron {
-  color: #C7C7CC;
+  color: var(--opaque-separator);
   font-size: 20px;
+  font-weight: 300;
   line-height: 1;
 }

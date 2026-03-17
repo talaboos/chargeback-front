@@ -2,7 +2,31 @@
 
 :root {
   --background: #ffffff;
-  --foreground: #171717;
+  --foreground: #000000;
+
+  /* Apple HIG system colors (light) */
+  --system-blue: #007AFF;
+  --system-red: #FF3B30;
+  --system-green: #34C759;
+  --system-orange: #FF9500;
+  --system-purple: #AF52DE;
+
+  /* Label colors */
+  --label-primary: #000000;
+  --label-secondary: #3C3C4399;
+  --label-tertiary: #3C3C434D;
+  --label-quaternary: #3C3C432E;
+
+  /* Background colors */
+  --system-background: #FFFFFF;
+  --secondary-system-background: #F2F2F7;
+  --tertiary-system-background: #FFFFFF;
+  --system-grouped-background: #F2F2F7;
+  --secondary-system-grouped-background: #FFFFFF;
+
+  /* Separator */
+  --separator: #3C3C4336;
+  --opaque-separator: #C6C6C8;
 }
 
 @theme inline {
@@ -10,26 +34,21 @@
   --color-foreground: var(--foreground);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #ffffff;
-    --foreground: #171717;
-  }
-}
-
 html {
   overflow-x: hidden;
   -webkit-tap-highlight-color: transparent;
   scroll-behavior: smooth;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 html {
   touch-action: none;
-  background: #fff;
+  background: var(--system-grouped-background);
 }
 
 html, body {
-  background: #fff;
+  background: var(--system-grouped-background);
   width: 100%;
   height: 100%;
 }
@@ -42,6 +61,9 @@ html, body {
 }
 
 body {
-  color: var(--foreground);
-  font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'SF Pro Text', var(--font-inter), 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  color: var(--label-primary);
+  font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'SF Pro Display', var(--font-inter), 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  font-size: 17px;
+  line-height: 22px;
+  letter-spacing: -0.41px;
 }
