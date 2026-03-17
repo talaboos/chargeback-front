@@ -10,7 +10,7 @@ services:
     ports:
       - "${NODE_PORT:-3000}:3000"
     environment:
-      - API_BASE_URL_INTERNAL=http://host.docker.internal:8083
+      - API_BASE_URL_INTERNAL=http://laravel:80
       - NEXTAUTH_SECRET=DA7yaoTFT5Gl5czkmkT34FLvFtPqcRm05NVkYqTJPQE=
       - NEXTAUTH_URL=http://localhost:3000
     extra_hosts:

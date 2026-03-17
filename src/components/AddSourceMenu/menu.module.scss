@@ -88,3 +88,53 @@
   font-weight: 500;
   line-height: 16px;
 }
+
+.progressWrap {
+  height: 4px;
+  background: #F0F0F0;
+  border-radius: 2px;
+  margin: 4px 12px 8px;
+  overflow: hidden;
+}
+
+.progressBar {
+  height: 100%;
+  background: #6361F3;
+  border-radius: 2px;
+  transition: width 0.3s ease;
+}
+
+.errorBlock {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 12px;
+  margin: 0 4px 4px;
+  background: #FFF0F0;
+  border-radius: 8px;
+  gap: 8px;
+}
+
+.errorText {
+  color: #E53935;
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 16px;
+}
+
+.retryBtn {
+  flex-shrink: 0;
+  border: none;
+  background: #E53935;
+  color: #fff;
+  font-size: 13px;
+  font-weight: 600;
+  padding: 6px 14px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.15s;
+
+  &:hover {
+    background: #C62828;
+  }
+}

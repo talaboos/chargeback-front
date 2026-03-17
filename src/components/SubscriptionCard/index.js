@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { getCachedStage, setCachedStage, getLogoSrc } from '@/utils/logoCache';
 import styles from './card.module.scss';
 
 function formatDate(dateStr) {
@@ -26,67 +27,77 @@ function getInitial(name) {
   return name ? name.charAt(0).toUpperCase() : '?';
 }
 
-const LOGO_STAGE_GOOGLE = 0;
-const LOGO_STAGE_CLEARBIT = 1;
-const LOGO_STAGE_FALLBACK = 2;
-
-function getLogoSrc(domain, stage) {
-  if (stage === LOGO_STAGE_GOOGLE && domain) {
-    return `https://www.google.com/s2/favicons?domain=${domain}&sz=128`;
-  }
-  if (stage === LOGO_STAGE_CLEARBIT && domain) {
-    return `https://logo.clearbit.com/${domain}`;
-  }
-  return null;
-}
-
-export default function SubscriptionCard({ subscription, onClick }) {
-  const [logoStage, setLogoStage] = useState(LOGO_STAGE_GOOGLE);
-  const isCancelled = subscription.status === 'cancelled';
+export default function SubscriptionCard({ subscription, onClick, onCancel, cancelling, error, onDismissError }) {
   const domain = subscription.service_domain;
+  const [logoStage, setLogoStage] = useState(() => getCachedStage(domain));
+  const isCancelled = subscription.status === 'cancelled';
 
   const handleImgError = () => {
-    setLogoStage((prev) => prev + 1);
+    setLogoStage((prev) => {
+      const next = prev + 1;
+      setCachedStage(domain, next);
+      return next;
+    });
   };
 
   const logoSrc = getLogoSrc(domain, logoStage);
 
   return (
-    <div
-      className={`${styles.card} ${isCancelled ? styles.cancelled : ''}`}
-      onClick={onClick}
-      role="button"
-      tabIndex={0}
-    >
-      <div className={styles.logo}>
-        {logoSrc ? (
-          <img
-            src={logoSrc}
-            alt={subscription.service_name}
-            width={40}
-            height={40}
-            onError={handleImgError}
-          />
-        ) : (
-          <div className={styles.fallback}>
-            {getInitial(subscription.service_name)}
+    <div className={styles.wrap}>
+      <div
+        className={`${styles.card} ${isCancelled ? styles.cancelled : ''}`}
+        onClick={onClick}
+        role="button"
+        tabIndex={0}
+      >
+        <div className={styles.logo}>
+          {logoSrc ? (
+            <img
+              src={logoSrc}
+              alt={subscription.service_name}
+              width={40}
+              height={40}
+              onError={handleImgError}
+            />
+          ) : (
+            <div className={styles.fallback}>
+              {getInitial(subscription.service_name)}
+            </div>
+          )}
+        </div>
+        <div className={styles.info}>
+          <div className={styles.name}>{subscription.service_name}</div>
+          <div className={styles.renewal}>
+            {isCancelled
+              ? 'Cancelled'
+              : `Renews ${formatDate(subscription.next_renewal_date)}`}
           </div>
+        </div>
+        <div className={styles.right}>
+          <div className={styles.amount}>
+            {formatAmount(subscription.amount, subscription.currency)}
+          </div>
+          <div className={styles.cycle}>/{subscription.billing_cycle}</div>
+        </div>
+        {!isCancelled && onCancel && (
+          <button
+            className={styles.cancelBtn}
+            onClick={(e) => {
+              e.stopPropagation();
+              onCancel(subscription.id);
+            }}
+            disabled={cancelling}
+          >
+            {cancelling ? 'Cancelling...' : 'Cancel'}
+          </button>
         )}
       </div>
-      <div className={styles.info}>
-        <div className={styles.name}>{subscription.service_name}</div>
-        <div className={styles.renewal}>
-          {isCancelled
-            ? 'Cancelled'
-            : `Renews ${formatDate(subscription.next_renewal_date)}`}
+      {error && (
+        <div className={styles.errorToast}>
+          <span>{error}</span>
+          <button className={styles.errorDismiss} onClick={onDismissError}>&times;</button>
         </div>
-      </div>
-      <div className={styles.right}>
-        <div className={styles.amount}>
-          {formatAmount(subscription.amount, subscription.currency)}
-        </div>
-        <div className={styles.cycle}>/{subscription.billing_cycle}</div>
-      </div>
+      )}
     </div>
   );
 }

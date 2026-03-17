@@ -1,7 +1,16 @@
-const fetcher = (url, method, query) =>
-  fetch(url, {
+const fetcher = async (url, method, query) => {
+  const r = await fetch(url, {
     method: method || 'GET',
     ...(query && { body: query }),
-  }).then((r) => r.json());
+  });
+
+  if (r.status === 401) {
+    const err = new Error('Unauthorized');
+    err.status = 401;
+    throw err;
+  }
+
+  return r.json();
+};
 
 export default fetcher;

@@ -7,7 +7,7 @@ export const loginAuth = async (query) => {
   const data = await login.loginAuth(query);
 
   if (!data) {
-    return null;
+    return { status: 'error', message: 'Something went wrong. Please try again.' };
   }
 
   return data;

@@ -47,23 +47,74 @@ export default function Home() {
     refreshInterval: 0,
   });
 
+  useEffect(() => {
+    if (error?.status === 401) {
+      window.location.href = '/login/verification';
+    }
+  }, [error]);
+
   const loading = !subsData && !error;
-  const subscriptions = subsData?.data || [];
+  const rawSubscriptions = subsData?.data || [];
   const totalMonthly = subsData?.total_monthly || 0;
   const currency = subsData?.currency || 'USD';
   const totalsByCurrency = subsData?.totals_by_currency || {};
 
+  const subscriptions = [...rawSubscriptions].sort((a, b) => {
+    // Gmail-sourced subscriptions go after manually added / screenshot ones
+    const aIsGmail = a.source === 'gmail';
+    const bIsGmail = b.source === 'gmail';
+
+    if (aIsGmail && bIsGmail) {
+      // Both gmail — sort A-Z by name
+      return (a.service_name || '').localeCompare(b.service_name || '');
+    }
+    if (aIsGmail !== bIsGmail) {
+      // Non-gmail (newer added) first
+      return aIsGmail ? 1 : -1;
+    }
+    // Both non-gmail — newest first by created_at
+    return new Date(b.created_at) - new Date(a.created_at);
+  });
+
+  const [cancellingId, setCancellingId] = useState(null);
+  const [cardError, setCardError] = useState(null);
+
   const handleCancel = useCallback(
     async (subId) => {
+      setCancellingId(subId);
+      setCardError(null);
       try {
         const res = await fetch(`/api/subscriptions/${subId}/cancel`, {
           method: 'POST',
         });
-        if (res.ok) {
-          sendGTMEvent({ event: 'subscription_cancelled' });
-          mutate();
-        }
-      } catch {}
+        if (!res.ok) throw new Error('Failed to cancel subscription');
+        sendGTMEvent({ event: 'subscription_cancelled' });
+        await mutate();
+      } catch (err) {
+        console.error('Cancel failed:', err);
+        setCardError({ id: subId, message: err.message || 'Network error. Try again.' });
+        throw err;
+      } finally {
+        setCancellingId(null);
+      }
+    },
+    [mutate],
+  );
+
+  const handleDelete = useCallback(
+    async (subId) => {
+      try {
+        const res = await fetch(`/api/subscriptions/${subId}`, {
+          method: 'DELETE',
+        });
+        if (!res.ok) throw new Error('Failed to delete subscription');
+        sendGTMEvent({ event: 'subscription_deleted' });
+        await mutate();
+      } catch (err) {
+        console.error('Delete failed:', err);
+        setCardError({ id: subId, message: err.message || 'Network error. Try again.' });
+        throw err;
+      }
     },
     [mutate],
   );
@@ -73,6 +124,7 @@ export default function Home() {
 
   const pollForResult = useCallback(
     (messageId) => {
+      if (pollRef.current) clearInterval(pollRef.current);
       setProcessing(true);
       let attempts = 0;
       const maxAttempts = 30; // 30 * 2s = 60s max
@@ -89,7 +141,9 @@ export default function Home() {
               mutate(); // refresh subscriptions list
             }
           }
-        } catch {}
+        } catch (err) {
+          console.error('Poll failed:', err);
+        }
 
         if (attempts >= maxAttempts) {
           clearInterval(pollRef.current);
@@ -121,15 +175,16 @@ export default function Home() {
         <div className={styles.top}>Subscriptions</div>
       </header>
       <main className={styles.main}>
+        {processing && (
+          <div className={styles.processingBar}>
+            <div className={styles.loading}>Analyzing your screenshot...</div>
+          </div>
+        )}
         {loading ? (
           <div className={styles.loaderWrap}>
             <div className={styles.loading}>Loading...</div>
           </div>
-        ) : processing ? (
-          <div className={styles.loaderWrap}>
-            <div className={styles.loading}>Analyzing your screenshot...</div>
-          </div>
-        ) : subscriptions.length === 0 ? (
+        ) : subscriptions.length === 0 && !processing ? (
           <div className={styles.content}>
             <div className={styles.info}>
               <div className={styles.emptyState}>
@@ -185,6 +240,10 @@ export default function Home() {
                   key={sub.id}
                   subscription={sub}
                   onClick={() => setSelectedSub(sub)}
+                  onCancel={handleCancel}
+                  cancelling={cancellingId === sub.id}
+                  error={cardError?.id === sub.id ? cardError.message : null}
+                  onDismissError={() => setCardError(null)}
                 />
               ))}
             </div>
@@ -222,8 +281,9 @@ export default function Home() {
       </div>
       {selectedSub && (
         <SubscriptionDetail
-          subscription={selectedSub}
+          subscription={subscriptions.find((s) => s.id === selectedSub.id) || selectedSub}
           onCancel={handleCancel}
+          onDelete={handleDelete}
           onClose={() => {
             setSelectedSub(null);
             mutate();

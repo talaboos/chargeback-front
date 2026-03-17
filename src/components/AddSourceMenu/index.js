@@ -4,32 +4,88 @@ import { useRef, useState } from 'react';
 import { uploadFile } from '@/action/uploadFile';
 import styles from './menu.module.scss';
 
+const ALLOWED_TYPES = ['image/png', 'image/jpeg', 'image/webp', 'image/heic', 'application/pdf'];
+const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10MB
+
+function validateFile(file) {
+  if (!ALLOWED_TYPES.includes(file.type)) {
+    return 'Only images (PNG, JPG, WebP, HEIC) and PDF files are allowed.';
+  }
+  if (file.size > MAX_FILE_SIZE) {
+    return 'File is too large. Maximum size is 10MB.';
+  }
+  return null;
+}
+
 export default function AddSourceMenu({ onClose, onUploadComplete }) {
   const fileInputRef = useRef(null);
   const [uploading, setUploading] = useState(false);
+  const [progress, setProgress] = useState(0);
+  const [uploadError, setUploadError] = useState(null);
+  const lastFileRef = useRef(null);
 
   const handleUpload = () => {
+    setUploadError(null);
     fileInputRef.current?.click();
+  };
+
+  const doUpload = async (file) => {
+    setUploading(true);
+    setUploadError(null);
+    setProgress(10);
+
+    try {
+      setProgress(20);
+      const buffer = await file.arrayBuffer();
+      const bytes = new Uint8Array(buffer);
+      setProgress(50);
+
+      const result = await uploadFile(bytes, file.name, file.type);
+      setProgress(90);
+
+      if (result?.error) {
+        setUploadError(result.message || 'Upload failed');
+        if (result.error === 'auth') {
+          window.location.href = '/';
+        }
+        return;
+      }
+      if (result) {
+        setProgress(100);
+        onUploadComplete?.(result);
+        onClose();
+      } else {
+        setUploadError('Upload failed. Please try again.');
+      }
+    } catch (err) {
+      console.error('Upload failed:', err);
+      setUploadError('Upload failed. Please try again.');
+    } finally {
+      setUploading(false);
+      if (fileInputRef.current) fileInputRef.current.value = '';
+    }
   };
 
   const handleFileChange = async (e) => {
     const file = e.target.files?.[0];
     if (!file) return;
 
-    setUploading(true);
-    try {
-      const buffer = await file.arrayBuffer();
-      const bytes = new Uint8Array(buffer);
-      const result = await uploadFile(bytes, file.name, file.type);
-      if (result) {
-        onUploadComplete?.(result);
-        onClose();
-      }
-    } catch (err) {
-      console.error('Upload failed:', err);
-    } finally {
-      setUploading(false);
+    const validationError = validateFile(file);
+    if (validationError) {
+      setUploadError(validationError);
       if (fileInputRef.current) fileInputRef.current.value = '';
+      return;
+    }
+
+    lastFileRef.current = file;
+    await doUpload(file);
+  };
+
+  const handleRetry = async () => {
+    if (lastFileRef.current) {
+      await doUpload(lastFileRef.current);
+    } else {
+      handleUpload();
     }
   };
 
@@ -136,12 +192,26 @@ export default function AddSourceMenu({ onClose, onUploadComplete }) {
           </div>
           <div className={styles.label}>
             <span className={styles.title}>{uploading ? 'Uploading...' : 'Upload a file'}</span>
-            <span className={styles.subtitle}>Upload a file</span>
+            <span className={styles.subtitle}>PNG, JPG, WebP, HEIC, PDF (max 10MB)</span>
           </div>
         </button>
+        {uploading && (
+          <div className={styles.progressWrap}>
+            <div className={styles.progressBar} style={{ width: `${progress}%` }} />
+          </div>
+        )}
+        {uploadError && (
+          <div className={styles.errorBlock}>
+            <span className={styles.errorText}>{uploadError}</span>
+            <button className={styles.retryBtn} onClick={handleRetry}>
+              Retry
+            </button>
+          </div>
+        )}
         <input
           ref={fileInputRef}
           type="file"
+          accept="image/png,image/jpeg,image/webp,image/heic,application/pdf"
           className={styles.hiddenInput}
           onChange={handleFileChange}
         />

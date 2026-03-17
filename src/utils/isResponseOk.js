@@ -8,6 +8,10 @@ export const isResponseOk = (response) => {
     if ('ok' in objectResponse && isBoolean(objectResponse?.ok)) {
       return Boolean(objectResponse?.ok);
     }
+
+    if ('exception' in objectResponse || objectResponse?.status === 'error') {
+      return false;
+    }
   }
 
   return true;

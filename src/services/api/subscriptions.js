@@ -27,6 +27,19 @@ export class SubscriptionsApi extends Api {
     if (!ok) return null;
     return data;
   }
+
+  async destroy(token, id) {
+    const { ok, data } = await this.callAsync(
+      `${REQUEST_URL}subscriptions/${id}`,
+      {
+        method: 'DELETE',
+        headers: { Authorization: `Bearer ${token}` },
+      },
+    );
+
+    if (!ok) return null;
+    return data;
+  }
 }
 
 export default SubscriptionsApi;

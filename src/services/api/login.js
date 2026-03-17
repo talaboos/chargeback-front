@@ -38,7 +38,7 @@ export class Login extends Api {
     });
 
     if (!ok) {
-      return null;
+      return { status: 'error', message: data?.message || 'Invalid credentials' };
     }
 
     return data;

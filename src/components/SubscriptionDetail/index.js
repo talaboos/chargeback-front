@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { getCachedStage, setCachedStage, getLogoSrc } from '@/utils/logoCache';
 import styles from './detail.module.scss';
 
 function formatDate(dateStr) {
@@ -26,44 +27,40 @@ function getInitial(name) {
   return name ? name.charAt(0).toUpperCase() : '?';
 }
 
-const LOGO_STAGE_GOOGLE = 0;
-const LOGO_STAGE_CLEARBIT = 1;
-const LOGO_STAGE_FALLBACK = 2;
-
-function getLogoSrc(domain, stage) {
-  if (stage === LOGO_STAGE_GOOGLE && domain) {
-    return `https://www.google.com/s2/favicons?domain=${domain}&sz=128`;
-  }
-  if (stage === LOGO_STAGE_CLEARBIT && domain) {
-    return `https://logo.clearbit.com/${domain}`;
-  }
-  return null;
-}
-
 function getStatusClass(status) {
   if (status === 'cancelled') return styles.cancelled;
   if (status === 'expired') return styles.expired;
   return styles.active;
 }
 
-export default function SubscriptionDetail({ subscription, onCancel, onClose }) {
-  const [logoStage, setLogoStage] = useState(LOGO_STAGE_GOOGLE);
-  const [cancelling, setCancelling] = useState(false);
-
+export default function SubscriptionDetail({ subscription, onCancel, onDelete, onClose }) {
   const domain = subscription.service_domain;
+  const [logoStage, setLogoStage] = useState(() => getCachedStage(domain));
+  const [cancelling, setCancelling] = useState(false);
+  const [deleting, setDeleting] = useState(false);
+  const [actionError, setActionError] = useState(null);
+
   const logoSrc = getLogoSrc(domain, logoStage);
   const isCancelled = subscription.status === 'cancelled';
 
   const handleImgError = () => {
-    setLogoStage((prev) => prev + 1);
+    setLogoStage((prev) => {
+      const next = prev + 1;
+      setCachedStage(domain, next);
+      return next;
+    });
   };
 
   const handleCancel = async () => {
     if (cancelling || isCancelled) return;
     setCancelling(true);
+    setActionError(null);
     try {
       await onCancel(subscription.id);
       onClose();
+    } catch (err) {
+      console.error('Cancel failed:', err);
+      setActionError('Failed to cancel. Please try again.');
     } finally {
       setCancelling(false);
     }
@@ -146,16 +143,39 @@ export default function SubscriptionDetail({ subscription, onCancel, onClose }) 
           </div>
         )}
 
+        {actionError && (
+          <div className={styles.actionError}>{actionError}</div>
+        )}
         <div className={styles.actions}>
           {!isCancelled && (
             <button
               className={styles.cancelBtn}
               onClick={handleCancel}
-              disabled={cancelling}
+              disabled={cancelling || deleting}
             >
               {cancelling ? 'Cancelling...' : 'Cancel Subscription'}
             </button>
           )}
+          <button
+            className={styles.deleteBtn}
+            onClick={async () => {
+              if (deleting) return;
+              setDeleting(true);
+              setActionError(null);
+              try {
+                await onDelete(subscription.id);
+                onClose();
+              } catch (err) {
+                console.error('Delete failed:', err);
+                setActionError('Failed to delete. Please try again.');
+              } finally {
+                setDeleting(false);
+              }
+            }}
+            disabled={deleting || cancelling}
+          >
+            {deleting ? 'Deleting...' : 'Delete Subscription'}
+          </button>
         </div>
       </div>
     </div>

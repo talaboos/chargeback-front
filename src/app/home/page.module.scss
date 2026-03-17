@@ -51,6 +51,13 @@
   flex: 1;
 }
 
+.processingBar {
+  background: #F0F0FF;
+  border-radius: 12px;
+  padding: 12px 16px;
+  margin: 12px 0;
+}
+
 @keyframes move {
   0% {
     transform: rotate(0);

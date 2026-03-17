@@ -6,7 +6,7 @@ export const withAuthToken =
     const token = await getTokenFromHeader();
 
     if (!token) {
-      return null;
+      return { error: 'auth', message: 'Session expired. Please log in again.' };
     }
 
     return handler(token, formData, ...rest);
