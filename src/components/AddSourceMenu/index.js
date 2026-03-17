@@ -17,7 +17,7 @@ function validateFile(file) {
   return null;
 }
 
-export default function AddSourceMenu({ onClose, onUploadComplete }) {
+export default function AddSourceMenu({ onClose, onUploadComplete, onManualAdd }) {
   const fileInputRef = useRef(null);
   const [uploading, setUploading] = useState(false);
   const [progress, setProgress] = useState(0);
@@ -121,8 +121,11 @@ export default function AddSourceMenu({ onClose, onUploadComplete }) {
           </div>
         </button>
         <button
-          className={`${styles.option} ${styles.disabled}`}
-          disabled
+          className={styles.option}
+          onClick={() => {
+            onClose();
+            onManualAdd?.();
+          }}
         >
           <div className={styles.icon}>
             <svg
@@ -144,7 +147,7 @@ export default function AddSourceMenu({ onClose, onUploadComplete }) {
           </div>
           <div className={styles.label}>
             <span className={styles.title}>Add manually</span>
-            <span className={styles.subtitle}>Coming soon</span>
+            <span className={styles.subtitle}>Enter subscription details</span>
           </div>
         </button>
         <button

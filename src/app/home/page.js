@@ -9,6 +9,7 @@ import AddSourceMenu from '@/components/AddSourceMenu';
 import ShortcutModal from '@/components/Modal/shortcut';
 import SubscriptionCard from '@/components/SubscriptionCard';
 import SubscriptionDetail from '@/components/SubscriptionDetail';
+import AddSubscription from '@/components/AddSubscription';
 
 import useFetch from '@/hooks/useFetch';
 import { idAtom } from '@/state/atoms/idAtom';
@@ -28,6 +29,7 @@ function formatTotal(amount, currency) {
 
 export default function Home() {
   const [menuOpen, setMenuOpen] = useState(false);
+  const [manualAddOpen, setManualAddOpen] = useState(false);
   const [selectedSub, setSelectedSub] = useState(null);
   const [id, setId] = useAtom(idAtom);
   const [popup] = useAtom(shortcutAtom);
@@ -78,6 +80,14 @@ export default function Home() {
 
   const activeSubs = subscriptions.filter((s) => s.status === 'active');
   const inactiveSubs = subscriptions.filter((s) => s.status !== 'active');
+
+  // Group active subs by platform
+  const appleSubs = activeSubs.filter((s) => s.platform === 'app_store');
+  const googleSubs = activeSubs.filter((s) => s.platform === 'play_store');
+  const webSubs = activeSubs.filter((s) => s.platform === 'web');
+  const manualSubs = activeSubs.filter(
+    (s) => !s.platform || s.platform === 'manual' || !['app_store', 'play_store', 'web'].includes(s.platform),
+  );
 
   const handleCancel = useCallback(
     async (subId) => {
@@ -228,19 +238,27 @@ export default function Home() {
                   : ''}
               </div>
             </div>
-            {activeSubs.length > 0 && (
-              <div className={styles.group}>
-                {activeSubs.map((sub, i) => (
-                  <div key={sub.id}>
-                    <SubscriptionCard
-                      subscription={sub}
-                      onClick={() => setSelectedSub(sub)}
-                    />
-                    {i < activeSubs.length - 1 && <div className={styles.divider} />}
-                  </div>
-                ))}
+            {[
+              { label: 'App Store', subs: appleSubs },
+              { label: 'Google Play', subs: googleSubs },
+              { label: 'Web', subs: webSubs },
+              { label: 'Added Manually', subs: manualSubs },
+            ].filter((g) => g.subs.length > 0).map((g) => (
+              <div key={g.label}>
+                <div className={styles.sectionLabel}>{g.label}</div>
+                <div className={styles.group}>
+                  {g.subs.map((sub, i) => (
+                    <div key={sub.id}>
+                      <SubscriptionCard
+                        subscription={sub}
+                        onClick={() => setSelectedSub(sub)}
+                      />
+                      {i < g.subs.length - 1 && <div className={styles.divider} />}
+                    </div>
+                  ))}
+                </div>
               </div>
-            )}
+            ))}
             {inactiveSubs.length > 0 && (
               <>
                 <div className={styles.sectionLabel}>Inactive</div>
@@ -284,11 +302,18 @@ export default function Home() {
         <AddSourceMenu
           onClose={() => setMenuOpen(false)}
           onUploadComplete={handleUploadComplete}
+          onManualAdd={() => setManualAddOpen(true)}
         />
       )}
       <div className={styles.tapbarWrap}>
         <TapBar current="home" />
       </div>
+      {manualAddOpen && (
+        <AddSubscription
+          onClose={() => setManualAddOpen(false)}
+          onSave={() => mutate()}
+        />
+      )}
       {selectedSub && (
         <SubscriptionDetail
           subscription={subscriptions.find((s) => s.id === selectedSub.id) || selectedSub}

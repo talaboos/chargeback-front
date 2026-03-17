@@ -12,3 +12,15 @@ export const GET = withAuthentication(async (req, res, token) => {
 
   return NextResponse.json(result);
 });
+
+export const POST = withAuthentication(async (req, res, token) => {
+  const body = await req.json();
+  const api = new SubscriptionsApi();
+  const result = await api.create(token, body);
+
+  if (!result) {
+    return NextResponse.json({ error: 'Failed to create' }, { status: 500 });
+  }
+
+  return NextResponse.json(result, { status: 201 });
+});

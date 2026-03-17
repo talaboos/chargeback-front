@@ -103,7 +103,7 @@
   text-align: center;
 }
 
-// iOS grouped table card
+// iOS Settings-style key-value rows
 .infoCard {
   background: var(--secondary-system-grouped-background);
   border-radius: 10px;
@@ -114,7 +114,7 @@
 .infoRow {
   display: flex;
   align-items: center;
-  gap: 12px;
+  justify-content: space-between;
   padding: 11px 0;
   min-height: 44px;
 
@@ -123,20 +123,23 @@
   }
 }
 
-.infoIcon {
-  font-size: 18px;
-  width: 24px;
-  text-align: center;
-  flex-shrink: 0;
-}
-
 // iOS body
-.infoText {
+.infoLabel {
   font-size: 17px;
   font-weight: 400;
   letter-spacing: -0.41px;
   line-height: 22px;
   color: var(--label-primary);
+  flex-shrink: 0;
+}
+
+.infoValue {
+  font-size: 17px;
+  font-weight: 400;
+  letter-spacing: -0.41px;
+  line-height: 22px;
+  color: var(--label-secondary);
+  text-align: right;
 }
 
 .expiredText {
@@ -155,6 +158,159 @@
   border-radius: 10px;
   text-align: center;
   margin-bottom: 12px;
+}
+
+// Confirmation card
+.confirmCard {
+  background: var(--secondary-system-grouped-background);
+  border-radius: 10px;
+  padding: 20px 16px;
+  margin-bottom: 12px;
+  text-align: center;
+}
+
+.confirmTitle {
+  font-size: 17px;
+  font-weight: 600;
+  letter-spacing: -0.41px;
+  line-height: 22px;
+  color: var(--label-primary);
+  margin-bottom: 16px;
+}
+
+.confirmActions {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.confirmYes {
+  width: 100%;
+  padding: 11px 16px;
+  border: none;
+  background: var(--system-blue);
+  color: #fff;
+  font-size: 17px;
+  font-weight: 600;
+  letter-spacing: -0.41px;
+  line-height: 22px;
+  border-radius: 10px;
+  cursor: pointer;
+  min-height: 44px;
+
+  &:active {
+    opacity: 0.85;
+  }
+
+  &:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+  }
+}
+
+.confirmNo {
+  width: 100%;
+  padding: 11px 16px;
+  border: none;
+  background: transparent;
+  color: var(--system-blue);
+  font-size: 17px;
+  font-weight: 400;
+  letter-spacing: -0.41px;
+  line-height: 22px;
+  border-radius: 10px;
+  cursor: pointer;
+  min-height: 44px;
+
+  &:active {
+    background: rgba(0, 0, 0, 0.04);
+  }
+}
+
+// Waiting hint
+.waitingHint {
+  padding: 11px 16px;
+  background: var(--secondary-system-grouped-background);
+  color: var(--label-secondary);
+  font-size: 15px;
+  font-weight: 400;
+  letter-spacing: -0.24px;
+  line-height: 20px;
+  border-radius: 10px;
+  text-align: center;
+  margin-bottom: 12px;
+}
+
+// Instructions card (web subscriptions)
+.instructionsCard {
+  background: var(--secondary-system-grouped-background);
+  border-radius: 10px;
+  padding: 20px 16px;
+  margin-bottom: 12px;
+}
+
+.instructionsTitle {
+  font-size: 17px;
+  font-weight: 600;
+  letter-spacing: -0.41px;
+  line-height: 22px;
+  color: var(--label-primary);
+  margin-bottom: 12px;
+}
+
+.instructionsBody {
+  margin-bottom: 16px;
+}
+
+.instructionStep {
+  font-size: 15px;
+  font-weight: 400;
+  letter-spacing: -0.24px;
+  line-height: 20px;
+  color: var(--label-secondary);
+  padding: 4px 0;
+}
+
+.instructionsActions {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+// Unsupported cancel screen
+.unsupportedCard {
+  background: var(--secondary-system-grouped-background);
+  border-radius: 10px;
+  padding: 24px 16px;
+  margin-bottom: 12px;
+  text-align: center;
+}
+
+.unsupportedIcon {
+  margin-bottom: 12px;
+}
+
+.unsupportedTitle {
+  font-size: 17px;
+  font-weight: 600;
+  letter-spacing: -0.41px;
+  line-height: 22px;
+  color: var(--label-primary);
+  margin-bottom: 8px;
+}
+
+.unsupportedBody {
+  font-size: 15px;
+  font-weight: 400;
+  letter-spacing: -0.24px;
+  line-height: 20px;
+  color: var(--label-secondary);
+  margin-bottom: 16px;
+}
+
+.unsupportedSteps {
+  text-align: left;
+  margin-bottom: 16px;
 }
 
 // iOS grouped action buttons
