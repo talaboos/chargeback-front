@@ -128,11 +128,27 @@
   margin-top: 4px;
 }
 
-// Subscription list
-.list {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
+// Subscription group (iOS card style)
+.group {
+  background: #F8F8FA;
+  border-radius: 14px;
+  padding: 0 16px;
+  margin-bottom: 8px;
+}
+
+.divider {
+  height: 1px;
+  background: #E8E8ED;
+  margin-left: 52px;
+}
+
+.sectionLabel {
+  font-size: 13px;
+  font-weight: 600;
+  color: #80808A;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+  padding: 16px 0 8px;
 }
 
 // Content (for empty state)

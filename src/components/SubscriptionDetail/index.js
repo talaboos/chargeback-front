@@ -10,7 +10,6 @@ function formatDate(dateStr) {
   return date.toLocaleDateString('en-US', {
     month: 'long',
     day: 'numeric',
-    year: 'numeric',
   });
 }
 
@@ -27,12 +26,6 @@ function getInitial(name) {
   return name ? name.charAt(0).toUpperCase() : '?';
 }
 
-function getStatusClass(status) {
-  if (status === 'cancelled') return styles.cancelled;
-  if (status === 'expired') return styles.expired;
-  return styles.active;
-}
-
 export default function SubscriptionDetail({ subscription, onCancel, onDelete, onClose }) {
   const domain = subscription.service_domain;
   const [logoStage, setLogoStage] = useState(() => getCachedStage(domain));
@@ -42,6 +35,8 @@ export default function SubscriptionDetail({ subscription, onCancel, onDelete, o
 
   const logoSrc = getLogoSrc(domain, logoStage);
   const isCancelled = subscription.status === 'cancelled';
+  const isExpired = subscription.status === 'expired';
+  const isInactive = isCancelled || isExpired;
 
   const handleImgError = () => {
     setLogoStage((prev) => {
@@ -52,7 +47,7 @@ export default function SubscriptionDetail({ subscription, onCancel, onDelete, o
   };
 
   const handleCancel = async () => {
-    if (cancelling || isCancelled) return;
+    if (cancelling || isInactive) return;
     setCancelling(true);
     setActionError(null);
     try {
@@ -66,31 +61,45 @@ export default function SubscriptionDetail({ subscription, onCancel, onDelete, o
     }
   };
 
-  const details = [
-    { label: 'Billing Cycle', value: subscription.billing_cycle },
-    { label: 'Next Renewal', value: formatDate(subscription.next_renewal_date) },
-    { label: 'Payment Date', value: formatDate(subscription.payment_date) },
-    { label: 'Start Date', value: formatDate(subscription.subscription_start_date) },
-    { label: 'End Date', value: formatDate(subscription.subscription_end_date) },
-    { label: 'Category', value: subscription.category },
-    { label: 'Transaction Type', value: subscription.transaction_type },
-    { label: 'Source', value: subscription.source },
-    { label: 'Domain', value: subscription.service_domain },
-  ].filter((d) => d.value && d.value !== 'Not specified');
+  const handleDelete = async () => {
+    if (deleting) return;
+    setDeleting(true);
+    setActionError(null);
+    try {
+      await onDelete(subscription.id);
+      onClose();
+    } catch (err) {
+      console.error('Delete failed:', err);
+      setActionError('Failed to delete. Please try again.');
+    } finally {
+      setDeleting(false);
+    }
+  };
+
+  const plan = subscription.subscription_plan && subscription.subscription_plan !== 'Not specified'
+    ? subscription.subscription_plan
+    : null;
+  const category = subscription.category && subscription.category !== 'Not specified'
+    ? subscription.category
+    : null;
+  const renewalDate = formatDate(subscription.next_renewal_date);
+  const price = formatAmount(subscription.amount, subscription.currency);
+  const cycle = subscription.billing_cycle;
 
   return (
     <div className={styles.overlay} onClick={onClose}>
       <div className={styles.sheet} onClick={(e) => e.stopPropagation()}>
         <div className={styles.handle} />
 
-        <div className={styles.header}>
+        {/* Hero: icon + name + plan */}
+        <div className={styles.hero}>
           <div className={styles.logo}>
             {logoSrc ? (
               <img
                 src={logoSrc}
                 alt={subscription.service_name}
-                width={52}
-                height={52}
+                width={56}
+                height={56}
                 onError={handleImgError}
               />
             ) : (
@@ -99,84 +108,67 @@ export default function SubscriptionDetail({ subscription, onCancel, onDelete, o
               </div>
             )}
           </div>
-          <div className={styles.headerInfo}>
-            <div className={styles.serviceName}>{subscription.service_name}</div>
-            {subscription.subscription_plan && subscription.subscription_plan !== 'Not specified' && (
-              <div className={styles.plan}>{subscription.subscription_plan}</div>
-            )}
-          </div>
-          <span className={`${styles.statusBadge} ${getStatusClass(subscription.status)}`}>
-            {subscription.status}
-          </span>
-        </div>
-
-        <div className={styles.amountSection}>
-          <div>
-            <div className={styles.amountValue}>
-              {formatAmount(subscription.amount, subscription.currency)}
+          <div className={styles.serviceName}>{subscription.service_name}</div>
+          {(category || plan) && (
+            <div className={styles.plan}>
+              {category}{category && plan ? ' · ' : ''}{plan}
             </div>
-            <div className={styles.amountCycle}>per {subscription.billing_cycle}</div>
-          </div>
-          <div className={styles.amountCurrency}>
-            {subscription.currency || 'USD'}
-          </div>
+          )}
         </div>
 
-        <div className={styles.section}>
-          <div className={styles.sectionTitle}>Details</div>
-          <div className={styles.rows}>
-            {details.map((d) => (
-              <div key={d.label} className={styles.row}>
-                <span className={styles.rowLabel}>{d.label}</span>
-                <span className={styles.rowValue}>{d.value}</span>
-              </div>
-            ))}
+        {/* Info card */}
+        <div className={styles.infoCard}>
+          <div className={styles.infoRow}>
+            <span className={styles.infoIcon}>💳</span>
+            <span className={styles.infoText}>{price} per {cycle}</span>
           </div>
-        </div>
-
-        {subscription.additional_info && subscription.additional_info !== 'Not specified' && (
-          <div className={styles.section}>
-            <div className={styles.sectionTitle}>Additional Info</div>
-            <div className={styles.additionalInfo}>
-              {subscription.additional_info}
+          {renewalDate && !isInactive && (
+            <div className={styles.infoRow}>
+              <span className={styles.infoIcon}>📅</span>
+              <span className={styles.infoText}>Renews {renewalDate}</span>
             </div>
-          </div>
-        )}
+          )}
+          {isInactive && (
+            <div className={styles.infoRow}>
+              <span className={styles.infoIcon}>📅</span>
+              <span className={`${styles.infoText} ${styles.expiredText}`}>
+                {isCancelled ? 'Cancelled' : 'Expired'}
+                {subscription.subscription_end_date
+                  ? ` · ${formatDate(subscription.subscription_end_date)}`
+                  : ''}
+              </span>
+            </div>
+          )}
+        </div>
 
+        {/* Actions */}
         {actionError && (
           <div className={styles.actionError}>{actionError}</div>
         )}
-        <div className={styles.actions}>
-          {!isCancelled && (
-            <button
-              className={styles.cancelBtn}
-              onClick={handleCancel}
-              disabled={cancelling || deleting}
-            >
-              {cancelling ? 'Cancelling...' : 'Cancel Subscription'}
-            </button>
-          )}
+
+        {!isInactive && (
           <button
-            className={styles.deleteBtn}
-            onClick={async () => {
-              if (deleting) return;
-              setDeleting(true);
-              setActionError(null);
-              try {
-                await onDelete(subscription.id);
-                onClose();
-              } catch (err) {
-                console.error('Delete failed:', err);
-                setActionError('Failed to delete. Please try again.');
-              } finally {
-                setDeleting(false);
-              }
-            }}
-            disabled={deleting || cancelling}
+            className={styles.cancelBtn}
+            onClick={handleCancel}
+            disabled={cancelling || deleting}
           >
-            {deleting ? 'Deleting...' : 'Delete Subscription'}
+            {cancelling ? 'Cancelling...' : 'Cancel Subscription'}
           </button>
-        </div>
+        )}
+
+        {!isInactive && renewalDate && (
+          <div className={styles.cancelHint}>
+            If you cancel now, you can still access your subscription until {renewalDate}.
+          </div>
+        )}
+
+        <button
+          className={styles.deleteBtn}
+          onClick={handleDelete}
+          disabled={deleting || cancelling}
+        >
+          {deleting ? 'Deleting...' : 'Delete Subscription'}
+        </button>
       </div>
     </div>
   );

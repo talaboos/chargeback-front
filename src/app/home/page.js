@@ -76,13 +76,11 @@ export default function Home() {
     return new Date(b.created_at) - new Date(a.created_at);
   });
 
-  const [cancellingId, setCancellingId] = useState(null);
-  const [cardError, setCardError] = useState(null);
+  const activeSubs = subscriptions.filter((s) => s.status === 'active');
+  const inactiveSubs = subscriptions.filter((s) => s.status !== 'active');
 
   const handleCancel = useCallback(
     async (subId) => {
-      setCancellingId(subId);
-      setCardError(null);
       try {
         const res = await fetch(`/api/subscriptions/${subId}/cancel`, {
           method: 'POST',
@@ -92,10 +90,7 @@ export default function Home() {
         await mutate();
       } catch (err) {
         console.error('Cancel failed:', err);
-        setCardError({ id: subId, message: err.message || 'Network error. Try again.' });
         throw err;
-      } finally {
-        setCancellingId(null);
       }
     },
     [mutate],
@@ -112,7 +107,6 @@ export default function Home() {
         await mutate();
       } catch (err) {
         console.error('Delete failed:', err);
-        setCardError({ id: subId, message: err.message || 'Network error. Try again.' });
         throw err;
       }
     },
@@ -234,19 +228,35 @@ export default function Home() {
                   : ''}
               </div>
             </div>
-            <div className={styles.list}>
-              {subscriptions.map((sub) => (
-                <SubscriptionCard
-                  key={sub.id}
-                  subscription={sub}
-                  onClick={() => setSelectedSub(sub)}
-                  onCancel={handleCancel}
-                  cancelling={cancellingId === sub.id}
-                  error={cardError?.id === sub.id ? cardError.message : null}
-                  onDismissError={() => setCardError(null)}
-                />
-              ))}
-            </div>
+            {activeSubs.length > 0 && (
+              <div className={styles.group}>
+                {activeSubs.map((sub, i) => (
+                  <div key={sub.id}>
+                    <SubscriptionCard
+                      subscription={sub}
+                      onClick={() => setSelectedSub(sub)}
+                    />
+                    {i < activeSubs.length - 1 && <div className={styles.divider} />}
+                  </div>
+                ))}
+              </div>
+            )}
+            {inactiveSubs.length > 0 && (
+              <>
+                <div className={styles.sectionLabel}>Inactive</div>
+                <div className={styles.group}>
+                  {inactiveSubs.map((sub, i) => (
+                    <div key={sub.id}>
+                      <SubscriptionCard
+                        subscription={sub}
+                        onClick={() => setSelectedSub(sub)}
+                      />
+                      {i < inactiveSubs.length - 1 && <div className={styles.divider} />}
+                    </div>
+                  ))}
+                </div>
+              </>
+            )}
           </>
         )}
       </main>
