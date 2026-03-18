@@ -10,6 +10,7 @@ import ShortcutModal from '@/components/Modal/shortcut';
 import SubscriptionCard from '@/components/SubscriptionCard';
 import SubscriptionDetail from '@/components/SubscriptionDetail';
 import AddSubscription from '@/components/AddSubscription';
+import GmailScanProgress from '@/components/GmailScanProgress';
 
 import useFetch from '@/hooks/useFetch';
 import { idAtom } from '@/state/atoms/idAtom';
@@ -31,6 +32,7 @@ export default function Home() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [manualAddOpen, setManualAddOpen] = useState(false);
   const [selectedSub, setSelectedSub] = useState(null);
+  const [gmailScanning, setGmailScanning] = useState(false);
   const [id, setId] = useAtom(idAtom);
   const [popup] = useAtom(shortcutAtom);
   const [, setModal] = useAtom(modalAtom);
@@ -44,6 +46,19 @@ export default function Home() {
       });
     }
   }, [popup, setModal]);
+
+  // Detect ?gmail_connected=true after OAuth redirect
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    if (params.get('gmail_connected') === 'true') {
+      // Remove the query param from URL without reload
+      const url = new URL(window.location.href);
+      url.searchParams.delete('gmail_connected');
+      window.history.replaceState({}, '', url.pathname + url.search);
+      // Auto-trigger scan
+      setGmailScanning(true);
+    }
+  }, []);
 
   const { data: subsData, error, mutate } = useFetch('/api/subscriptions', {
     refreshInterval: 0,
@@ -163,6 +178,38 @@ export default function Home() {
     return () => {
       if (pollRef.current) clearInterval(pollRef.current);
     };
+  }, []);
+
+  const [gmailError, setGmailError] = useState(null);
+
+  const handleGmailConnect = useCallback(async () => {
+    setGmailError(null);
+    try {
+      // Check if already connected
+      const statusRes = await fetch('/api/gmail/status');
+      if (statusRes.ok) {
+        const statusData = await statusRes.json();
+        if (statusData.connected) {
+          setGmailScanning(true);
+          return;
+        }
+      }
+
+      // Not connected — get OAuth URL and redirect
+      const connectRes = await fetch('/api/gmail/connect');
+      if (connectRes.ok) {
+        const connectData = await connectRes.json();
+        if (connectData.url) {
+          window.location.href = connectData.url;
+          return;
+        }
+      }
+
+      setGmailError('Gmail is temporarily unavailable. Please try again later.');
+    } catch (err) {
+      console.error('Gmail connect error:', err);
+      setGmailError('Gmail is temporarily unavailable. Please try again later.');
+    }
   }, []);
 
   const handleUploadComplete = (result) => {
@@ -298,11 +345,18 @@ export default function Home() {
           />
         </svg>
       </button>
+      {gmailError && (
+        <div className={styles.gmailError}>
+          <span>{gmailError}</span>
+          <button onClick={() => setGmailError(null)}>✕</button>
+        </div>
+      )}
       {menuOpen && (
         <AddSourceMenu
           onClose={() => setMenuOpen(false)}
           onUploadComplete={handleUploadComplete}
           onManualAdd={() => setManualAddOpen(true)}
+          onGmailConnect={handleGmailConnect}
         />
       )}
       <div className={styles.tapbarWrap}>
@@ -312,6 +366,15 @@ export default function Home() {
         <AddSubscription
           onClose={() => setManualAddOpen(false)}
           onSave={() => mutate()}
+        />
+      )}
+      {gmailScanning && (
+        <GmailScanProgress
+          onClose={() => setGmailScanning(false)}
+          onComplete={() => {
+            setGmailScanning(false);
+            mutate();
+          }}
         />
       )}
       {selectedSub && (

@@ -17,7 +17,7 @@ function validateFile(file) {
   return null;
 }
 
-export default function AddSourceMenu({ onClose, onUploadComplete, onManualAdd }) {
+export default function AddSourceMenu({ onClose, onUploadComplete, onManualAdd, onGmailConnect }) {
   const fileInputRef = useRef(null);
   const [uploading, setUploading] = useState(false);
   const [progress, setProgress] = useState(0);
@@ -94,8 +94,11 @@ export default function AddSourceMenu({ onClose, onUploadComplete, onManualAdd }
       <div className={styles.backdrop} onClick={onClose} />
       <div className={styles.menu}>
         <button
-          className={`${styles.option} ${styles.disabled}`}
-          disabled
+          className={styles.option}
+          onClick={() => {
+            onClose();
+            onGmailConnect?.();
+          }}
         >
           <div className={styles.icon}>
             <svg
@@ -117,7 +120,7 @@ export default function AddSourceMenu({ onClose, onUploadComplete, onManualAdd }
           </div>
           <div className={styles.label}>
             <span className={styles.title}>Connect Gmail</span>
-            <span className={styles.subtitle}>Coming soon</span>
+            <span className={styles.subtitle}>Scan for subscriptions</span>
           </div>
         </button>
         <button

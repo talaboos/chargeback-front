@@ -1,90 +1,178 @@
 .page {
   position: relative;
   height: 100dvh;
-  padding: 0 24px;
   display: flex;
   flex-direction: column;
-  background: #FFF;
+  background: var(--system-grouped-background, #F2F2F7);
   overflow: hidden;
 }
 
 .header {
   position: relative;
   z-index: 5;
-  border-bottom: 1px solid #F4F4F4;
-  margin: 0 -24px;
-  padding: 8px 0;
-  font-size: 18px;
-  font-style: normal;
-  font-weight: 700;
+  background: var(--system-background, #fff);
+  border-bottom: 0.5px solid var(--opaque-separator, #C6C6C8);
+  padding: 12px 16px;
 }
 
 .top {
   display: flex;
-  padding: 0 24px;
   align-items: center;
   justify-content: center;
-  position: relative;
-
-  div {
-    svg {
-      display: block;
-    }
-  }
-}
-
-.heading {
-  position: absolute;
-  top: 8px;
-  text-align: center;
-  width: calc(100% - 48px);
-  font-size: 16px;
-  font-style: normal;
-  font-weight: 700;
-  line-height: normal;
-  letter-spacing: -0.32px;
-  color: #000;
+  font-size: 17px;
+  font-weight: 600;
+  letter-spacing: -0.41px;
+  line-height: 22px;
+  color: var(--label-primary, #000);
 }
 
 .main {
   margin: 0 auto;
   width: 100%;
-  max-width: 400px;
+  max-width: 480px;
   display: flex;
   flex-direction: column;
+  flex: 1 1 0;
+  overflow-y: auto;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  -webkit-overflow-scrolling: touch;
+  padding: 0 16px 16px;
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+// Section header — iOS footnote style
+.sectionLabel {
+  font-size: 13px;
+  font-weight: 400;
+  letter-spacing: -0.08px;
+  line-height: 18px;
+  color: var(--label-secondary, #3C3C43);
+  text-transform: uppercase;
+  padding: 24px 16px 8px;
+}
+
+// iOS grouped table
+.group {
+  background: var(--secondary-system-grouped-background, #fff);
+  border-radius: 10px;
+  padding: 0 16px;
+}
+
+.divider {
+  height: 0.5px;
+  background: var(--separator, #C6C6C8);
+}
+
+// Row styles
+.row {
+  display: flex;
   align-items: center;
-  flex: 1 1 auto;
+  gap: 12px;
+  min-height: 44px;
+  padding: 12px 0;
 }
 
-.content {
-  position: relative;
-  z-index: 2;
+.rowButton {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-height: 44px;
+  padding: 12px 0;
+  width: 100%;
+  background: none;
+  border: none;
+  cursor: pointer;
+  text-align: left;
+  font-family: inherit;
+
+  &:active {
+    opacity: 0.6;
+  }
+}
+
+.rowLink {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-height: 44px;
+  padding: 12px 0;
+  text-decoration: none;
+  color: inherit;
+
+  &:active {
+    opacity: 0.6;
+  }
+}
+
+.rowIcon {
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  background: var(--system-grouped-background, #F2F2F7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: none;
+}
+
+.rowContent {
   display: flex;
   flex-direction: column;
-  align-items: flex-start;
-  overflow: hidden;
-  width: 100%;
-  flex: 1 0 auto;
-  padding-top: 10px;
+  gap: 2px;
+  flex: 1;
+  min-width: 0;
 }
 
-.menu {
-  width: 100%;
+.rowTitle {
+  font-size: 17px;
+  font-weight: 400;
+  line-height: 22px;
+  letter-spacing: -0.41px;
+  color: var(--label-primary, #000);
+}
 
-  li {
-    border-bottom: 1px solid #F4F4F4;
+.rowSubtitle {
+  font-size: 13px;
+  font-weight: 400;
+  line-height: 18px;
+  letter-spacing: -0.08px;
+  color: var(--label-secondary, #3C3C43);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.chevron {
+  flex: none;
+  display: flex;
+  align-items: center;
+}
+
+.disconnectBtn {
+  flex: none;
+  border: none;
+  background: none;
+  color: var(--system-red, #FF3B30);
+  font-size: 15px;
+  font-weight: 400;
+  letter-spacing: -0.24px;
+  cursor: pointer;
+  padding: 6px 0;
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
   }
 
-  a {
-    color: #1A1A2E;
-    display: block;
-    padding: 16px 0;
-    font-size: 16px;
-    font-style: normal;
-    font-weight: 700;
-    line-height: normal;
-    letter-spacing: -0.32px;
-    text-decoration: none;
-    background: url(data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTIiIGhlaWdodD0iMTIiIHZpZXdCb3g9IjAgMCAxMiAxMiIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHBhdGggZD0iTTQgMTBMNy42NDY0NSA2LjM1MzU1QzcuODQxNzEgNi4xNTgyOSA3Ljg0MTcxIDUuODQxNzEgNy42NDY0NSA1LjY0NjQ1TDQgMiIgc3Ryb2tlPSIjMUExQTJFIiBzdHJva2Utd2lkdGg9IjEuNSIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIi8+Cjwvc3ZnPgo=) 100% 50% no-repeat;
+  &:active:not(:disabled) {
+    opacity: 0.6;
   }
+}
+
+.tapbarWrap {
+  flex-shrink: 0;
 }
