@@ -89,6 +89,39 @@ export default function SubscriptionDetail({ subscription, onCancel, onDelete, o
   const [cancelView, setCancelView] = useState('idle');
   const openedAtRef = useRef(null);
 
+  // Edit mode
+  const [editing, setEditing] = useState(false);
+  const [saving, setSaving] = useState(false);
+  const [editName, setEditName] = useState(subscription.service_name || '');
+  const [editAmount, setEditAmount] = useState(subscription.amount || '');
+  const [editCycle, setEditCycle] = useState(subscription.billing_cycle || 'monthly');
+  const [editStatus, setEditStatus] = useState(subscription.status || 'active');
+
+  const handleSave = async () => {
+    setSaving(true);
+    setActionError(null);
+    try {
+      const res = await fetch(`/api/subscriptions/${subscription.id}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          service_name: editName,
+          amount: parseFloat(editAmount),
+          billing_cycle: editCycle,
+          status: editStatus,
+        }),
+      });
+      if (!res.ok) throw new Error('Update failed');
+      setEditing(false);
+      onClose();
+    } catch (err) {
+      console.error('Save failed:', err);
+      setActionError('Failed to save changes.');
+    } finally {
+      setSaving(false);
+    }
+  };
+
   const logoSrc = getLogoSrc(domain, logoStage);
   const isCancelled = subscription.status === 'cancelled';
   const isExpired = subscription.status === 'expired';
@@ -202,6 +235,19 @@ export default function SubscriptionDetail({ subscription, onCancel, onDelete, o
       <div className={styles.sheet} onClick={(e) => e.stopPropagation()}>
         <div className={styles.handle} />
 
+        {/* Edit button */}
+        {!editing && (
+          <button
+            className={styles.editBtn}
+            onClick={() => setEditing(true)}
+            aria-label="Edit subscription"
+          >
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125" stroke="var(--system-blue)" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+            </svg>
+          </button>
+        )}
+
         {/* Hero */}
         <div className={styles.hero}>
           <div className={styles.logo}>
@@ -227,36 +273,91 @@ export default function SubscriptionDetail({ subscription, onCancel, onDelete, o
           )}
         </div>
 
-        {/* Info card */}
-        <div className={styles.infoCard}>
-          <div className={styles.infoRow}>
-            <span className={styles.infoLabel}>Price</span>
-            <span className={styles.infoValue}>{price} / {cycle}</span>
+        {/* Info card / Edit form */}
+        {editing ? (
+          <div className={styles.editForm}>
+            <div className={styles.editField}>
+              <label className={styles.editLabel}>Name</label>
+              <input
+                className={styles.editInput}
+                value={editName}
+                onChange={(e) => setEditName(e.target.value)}
+              />
+            </div>
+            <div className={styles.editField}>
+              <label className={styles.editLabel}>Price</label>
+              <input
+                className={styles.editInput}
+                type="number"
+                step="0.01"
+                min="0"
+                value={editAmount}
+                onChange={(e) => setEditAmount(e.target.value)}
+              />
+            </div>
+            <div className={styles.editField}>
+              <label className={styles.editLabel}>Period</label>
+              <select
+                className={styles.editSelect}
+                value={editCycle}
+                onChange={(e) => setEditCycle(e.target.value)}
+              >
+                <option value="weekly">Weekly</option>
+                <option value="monthly">Monthly</option>
+                <option value="yearly">Yearly</option>
+              </select>
+            </div>
+            <div className={styles.editField}>
+              <label className={styles.editLabel}>Status</label>
+              <select
+                className={styles.editSelect}
+                value={editStatus}
+                onChange={(e) => setEditStatus(e.target.value)}
+              >
+                <option value="active">Active</option>
+                <option value="cancelled">Cancelled</option>
+              </select>
+            </div>
+            <div className={styles.editActions}>
+              <button className={styles.confirmYes} onClick={handleSave} disabled={saving}>
+                {saving ? 'Saving...' : 'Save'}
+              </button>
+              <button className={styles.confirmNo} onClick={() => setEditing(false)}>
+                Cancel
+              </button>
+            </div>
           </div>
-          {renewalDate && !isInactive && (
+        ) : (
+          <div className={styles.infoCard}>
             <div className={styles.infoRow}>
-              <span className={styles.infoLabel}>Renewal</span>
-              <span className={styles.infoValue}>{renewalDate}</span>
+              <span className={styles.infoLabel}>Price</span>
+              <span className={styles.infoValue}>{price} / {cycle}</span>
             </div>
-          )}
-          {platformLabel && (
-            <div className={styles.infoRow}>
-              <span className={styles.infoLabel}>Managed by</span>
-              <span className={styles.infoValue}>{platformLabel}</span>
-            </div>
-          )}
-          {isInactive && (
-            <div className={styles.infoRow}>
-              <span className={styles.infoLabel}>Status</span>
-              <span className={`${styles.infoValue} ${styles.expiredText}`}>
-                {isCancelled ? 'Cancelled' : 'Expired'}
-                {subscription.subscription_end_date
-                  ? ` \u00b7 ${formatDate(subscription.subscription_end_date)}`
-                  : ''}
-              </span>
-            </div>
-          )}
-        </div>
+            {renewalDate && !isInactive && (
+              <div className={styles.infoRow}>
+                <span className={styles.infoLabel}>Renewal</span>
+                <span className={styles.infoValue}>{renewalDate}</span>
+              </div>
+            )}
+            {platformLabel && (
+              <div className={styles.infoRow}>
+                <span className={styles.infoLabel}>Managed by</span>
+                <span className={styles.infoValue}>{platformLabel}</span>
+              </div>
+            )}
+            {isInactive && (
+              <div className={styles.infoRow}>
+                <span className={styles.infoLabel}>Status</span>
+                <span className={`${styles.infoValue} ${styles.expiredText}`}>
+                  {isCancelled ? 'Cancelled' : 'Expired'}
+                  {subscription.subscription_end_date
+                    ? ` \u00b7 ${formatDate(subscription.subscription_end_date)}`
+                    : ''}
+                </span>
+              </div>
+            )}
+          </div>
+        )}
 
         {/* Error */}
         {actionError && (

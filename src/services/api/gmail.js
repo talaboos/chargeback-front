@@ -50,7 +50,11 @@ export class GmailApi extends Api {
       },
     );
 
-    if (!ok) return null;
+    if (!ok) {
+      // Return error data so the caller can check error type
+      if (data?.error) return data;
+      return null;
+    }
     return data;
   }
 }

@@ -222,10 +222,21 @@ export default function Home() {
           </a>
         </div>
 
-        <div className={styles.tapbarWrap}>
-          <TapBar current="settings" />
-        </div>
+        <button
+          className={styles.logoutBtn}
+          onClick={async () => {
+            try {
+              await fetch('/api/auth/logout', { method: 'POST' });
+            } catch (e) {}
+            window.location.href = '/';
+          }}
+        >
+          Log Out
+        </button>
       </main>
+      <div className={styles.tapbarWrap}>
+        <TapBar current="settings" />
+      </div>
     </div>
   );
 }

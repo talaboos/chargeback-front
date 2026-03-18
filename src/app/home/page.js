@@ -11,6 +11,7 @@ import SubscriptionCard from '@/components/SubscriptionCard';
 import SubscriptionDetail from '@/components/SubscriptionDetail';
 import AddSubscription from '@/components/AddSubscription';
 import GmailScanProgress from '@/components/GmailScanProgress';
+import GmailPromo from '@/components/GmailPromo';
 
 import useFetch from '@/hooks/useFetch';
 import { idAtom } from '@/state/atoms/idAtom';
@@ -60,9 +61,19 @@ export default function Home() {
     }
   }, []);
 
-  const { data: subsData, error, mutate } = useFetch('/api/subscriptions', {
+  const { data: subsData, error, mutate: rawMutate } = useFetch('/api/subscriptions', {
     refreshInterval: 0,
   });
+
+  const [refreshing, setRefreshing] = useState(false);
+  const mutate = useCallback(async (...args) => {
+    setRefreshing(true);
+    try {
+      await rawMutate(...args);
+    } finally {
+      setRefreshing(false);
+    }
+  }, [rawMutate]);
 
   useEffect(() => {
     if (error?.status === 401) {
@@ -181,6 +192,28 @@ export default function Home() {
   }, []);
 
   const [gmailError, setGmailError] = useState(null);
+  // Show promo instantly if localStorage flag not set (hide later if gmail connected or subs exist)
+  const [showGmailPromo, setShowGmailPromo] = useState(() => {
+    if (typeof window === 'undefined') return false;
+    return !localStorage.getItem('gmail_promo_dismissed');
+  });
+
+  // Hide promo once we know user has subs or gmail connected
+  useEffect(() => {
+    if (!showGmailPromo) return;
+    if (!loading && rawSubscriptions.length > 0) {
+      setShowGmailPromo(false);
+      return;
+    }
+    if (!loading) {
+      fetch('/api/gmail/status')
+        .then((r) => r.ok ? r.json() : null)
+        .then((data) => {
+          if (data?.connected) setShowGmailPromo(false);
+        })
+        .catch(() => {});
+    }
+  }, [loading, rawSubscriptions.length, showGmailPromo]);
 
   const handleGmailConnect = useCallback(async () => {
     setGmailError(null);
@@ -190,6 +223,7 @@ export default function Home() {
       if (statusRes.ok) {
         const statusData = await statusRes.json();
         if (statusData.connected) {
+          setShowGmailPromo(false);
           setGmailScanning(true);
           return;
         }
@@ -205,9 +239,12 @@ export default function Home() {
         }
       }
 
+      // Error — hide promo, show error
+      setShowGmailPromo(false);
       setGmailError('Gmail is temporarily unavailable. Please try again later.');
     } catch (err) {
       console.error('Gmail connect error:', err);
+      setShowGmailPromo(false);
       setGmailError('Gmail is temporarily unavailable. Please try again later.');
     }
   }, []);
@@ -224,6 +261,7 @@ export default function Home() {
     <div className={styles.page}>
       <header className={styles.header}>
         <div className={styles.top}>Subscriptions</div>
+        {refreshing && <div className={styles.refreshBar} />}
       </header>
       <main className={styles.main}>
         {processing && (
@@ -374,6 +412,18 @@ export default function Home() {
           onComplete={() => {
             setGmailScanning(false);
             mutate();
+          }}
+        />
+      )}
+      {showGmailPromo && (
+        <GmailPromo
+          onConnect={() => {
+            localStorage.setItem('gmail_promo_dismissed', '1');
+            handleGmailConnect();
+          }}
+          onSkip={() => {
+            localStorage.setItem('gmail_promo_dismissed', '1');
+            setShowGmailPromo(false);
           }}
         />
       )}

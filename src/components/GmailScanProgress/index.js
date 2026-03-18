@@ -39,12 +39,15 @@ export default function GmailScanProgress({ onClose, onComplete }) {
     const doScan = async () => {
       try {
         const res = await fetch('/api/gmail/scan', { method: 'POST' });
+        const json = await res.json().catch(() => ({}));
         if (!res.ok) {
-          const json = await res.json().catch(() => ({}));
+          if (json.error === 'insufficient_permissions') {
+            setError('permissions');
+            return;
+          }
           throw new Error(json.error || 'Scan failed');
         }
-        const data = await res.json();
-        setScanResult(data);
+        setScanResult(json);
       } catch (err) {
         console.error('Gmail scan error:', err);
         setError(err.message || 'Something went wrong');
@@ -71,8 +74,19 @@ export default function GmailScanProgress({ onClose, onComplete }) {
                 <path d="M15 9L9 15M9 9L15 15" stroke="var(--system-red, #FF3B30)" strokeWidth="1.5" strokeLinecap="round" />
               </svg>
             </div>
-            <div className={styles.message}>Something went wrong</div>
-            <div className={styles.detail}>{error}</div>
+            {error === 'permissions' ? (
+              <>
+                <div className={styles.message}>Insufficient permissions</div>
+                <div className={styles.detail}>
+                  Gmail read access was not granted. Please go to Settings, disconnect Gmail, and reconnect with full access.
+                </div>
+              </>
+            ) : (
+              <>
+                <div className={styles.message}>Something went wrong</div>
+                <div className={styles.detail}>{error}</div>
+              </>
+            )}
             <button className={styles.doneBtn} onClick={onClose}>
               Close
             </button>

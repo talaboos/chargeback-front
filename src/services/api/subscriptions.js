@@ -45,6 +45,23 @@ export class SubscriptionsApi extends Api {
     return data;
   }
 
+  async update(token, id, body) {
+    const { ok, data } = await this.callAsync(
+      `${REQUEST_URL}subscriptions/${id}`,
+      {
+        method: 'PUT',
+        headers: {
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(body),
+      },
+    );
+
+    if (!ok) return null;
+    return data;
+  }
+
   async destroy(token, id) {
     const { ok, data } = await this.callAsync(
       `${REQUEST_URL}subscriptions/${id}`,

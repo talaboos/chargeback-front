@@ -173,6 +173,26 @@
   }
 }
 
+.logoutBtn {
+  width: 100%;
+  padding: 11px 16px;
+  border: none;
+  background: var(--secondary-system-grouped-background, #fff);
+  color: var(--system-red, #FF3B30);
+  font-size: 17px;
+  font-weight: 400;
+  letter-spacing: -0.41px;
+  line-height: 22px;
+  border-radius: 10px;
+  cursor: pointer;
+  margin-top: 24px;
+  min-height: 44px;
+
+  &:active {
+    opacity: 0.6;
+  }
+}
+
 .tapbarWrap {
   flex-shrink: 0;
 }

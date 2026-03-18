@@ -20,6 +20,7 @@
 }
 
 .sheet {
+  position: relative;
   background: var(--system-grouped-background);
   border-radius: 14px 14px 0 0;
   width: 100%;
@@ -43,6 +44,86 @@
     border-radius: 2.5px;
     background: var(--label-quaternary);
   }
+}
+
+// Edit button
+.editBtn {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  width: 36px;
+  height: 36px;
+  border: none;
+  background: var(--secondary-system-grouped-background);
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1;
+
+  &:active {
+    opacity: 0.6;
+  }
+}
+
+// Edit form
+.editForm {
+  background: var(--secondary-system-grouped-background);
+  border-radius: 10px;
+  padding: 0 16px;
+  margin-bottom: 20px;
+}
+
+.editField {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 11px 0;
+  min-height: 44px;
+
+  & + & {
+    border-top: 0.5px solid var(--separator);
+  }
+}
+
+.editLabel {
+  font-size: 17px;
+  font-weight: 400;
+  letter-spacing: -0.41px;
+  line-height: 22px;
+  color: var(--label-primary);
+  flex-shrink: 0;
+}
+
+.editInput,
+.editSelect {
+  font-size: 17px;
+  font-weight: 400;
+  letter-spacing: -0.41px;
+  line-height: 22px;
+  color: var(--label-primary);
+  text-align: right;
+  border: none;
+  background: transparent;
+  outline: none;
+  min-width: 120px;
+  padding: 0;
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+.editSelect {
+  cursor: pointer;
+  padding-right: 4px;
+}
+
+.editActions {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 16px 0;
+  border-top: 0.5px solid var(--separator);
 }
 
 // Hero section

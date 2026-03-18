@@ -10,5 +10,10 @@ export const POST = withAuthentication(async (req, res, token) => {
     return NextResponse.json({ error: 'Failed to scan' }, { status: 500 });
   }
 
+  // Pass through permission errors from backend
+  if (result.error === 'insufficient_permissions') {
+    return NextResponse.json(result, { status: 403 });
+  }
+
   return NextResponse.json(result);
 });
