@@ -3,7 +3,7 @@
   "short_name": "Reclaim",
   "description": "Smart subscription tracking",
   "start_url": "/",
-
+  "gcm_sender_id": "103953800507",
   "background_color": "#398ef9",
   "theme_color": "#398ef9",
   "icons": [

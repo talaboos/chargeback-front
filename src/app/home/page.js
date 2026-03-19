@@ -14,6 +14,7 @@ import GmailScanProgress from '@/components/GmailScanProgress';
 import GmailPromo from '@/components/GmailPromo';
 
 import useFetch from '@/hooks/useFetch';
+import usePushNotifications from '@/hooks/usePushNotifications';
 import { idAtom } from '@/state/atoms/idAtom';
 import { shortcutAtom } from '@/state/atoms/shortcutAtom';
 import { modalAtom } from '@/state/atoms/modalAtom';
@@ -30,6 +31,7 @@ function formatTotal(amount, currency) {
 }
 
 export default function Home() {
+  usePushNotifications();
   const [menuOpen, setMenuOpen] = useState(false);
   const [manualAddOpen, setManualAddOpen] = useState(false);
   const [selectedSub, setSelectedSub] = useState(null);
