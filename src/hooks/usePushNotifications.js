@@ -43,6 +43,15 @@ export default function usePushNotifications() {
 
         if (!fcmToken) return;
 
+        // Always listen for foreground messages
+        onMessage(messaging, (payload) => {
+          const { title, body } = payload.notification || {};
+          if (title && Notification.permission === 'granted') {
+            new Notification(title, { body, icon: '/favicon-96x96.png' });
+          }
+        });
+
+        // Only register token if it changed
         const storedToken = localStorage.getItem('fcm_token');
         if (storedToken === fcmToken) return;
 
@@ -55,14 +64,6 @@ export default function usePushNotifications() {
         if (res.ok) {
           localStorage.setItem('fcm_token', fcmToken);
         }
-
-        // Handle foreground messages
-        onMessage(messaging, (payload) => {
-          const { title, body } = payload.notification || {};
-          if (title && Notification.permission === 'granted') {
-            new Notification(title, { body, icon: '/favicon-96x96.png' });
-          }
-        });
       } catch (err) {
         console.error('Push notification registration failed:', err);
       }
