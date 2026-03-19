@@ -2,7 +2,7 @@
 
 import { useEffect, useRef } from 'react';
 import { initializeApp, getApps } from 'firebase/app';
-import { getMessaging, getToken, isSupported } from 'firebase/messaging';
+import { getMessaging, getToken, isSupported, onMessage } from 'firebase/messaging';
 
 const VAPID_KEY = process.env.NEXT_PUBLIC_FIREBASE_VAPID_KEY;
 
@@ -55,6 +55,14 @@ export default function usePushNotifications() {
         if (res.ok) {
           localStorage.setItem('fcm_token', fcmToken);
         }
+
+        // Handle foreground messages
+        onMessage(messaging, (payload) => {
+          const { title, body } = payload.notification || {};
+          if (title && Notification.permission === 'granted') {
+            new Notification(title, { body, icon: '/favicon-96x96.png' });
+          }
+        });
       } catch (err) {
         console.error('Push notification registration failed:', err);
       }
