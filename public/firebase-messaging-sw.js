@@ -19,6 +19,22 @@ messaging.onBackgroundMessage((payload) => {
     self.registration.showNotification(title, {
       body,
       icon: '/favicon-96x96.png',
+      data: { url: self.location.origin },
     });
   }
+});
+
+self.addEventListener('notificationclick', (event) => {
+  event.notification.close();
+  const url = event.notification.data?.url || self.location.origin;
+  event.waitUntil(
+    clients.matchAll({ type: 'window', includeUncontrolled: true }).then((windowClients) => {
+      for (const client of windowClients) {
+        if (client.url.startsWith(url) && 'focus' in client) {
+          return client.focus();
+        }
+      }
+      return clients.openWindow(url);
+    })
+  );
 });

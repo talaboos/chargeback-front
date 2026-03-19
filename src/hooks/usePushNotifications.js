@@ -47,7 +47,11 @@ export default function usePushNotifications() {
         onMessage(messaging, (payload) => {
           const { title, body } = payload.notification || {};
           if (title && Notification.permission === 'granted') {
-            new Notification(title, { body, icon: '/favicon-96x96.png' });
+            const n = new Notification(title, { body, icon: '/favicon-96x96.png' });
+            n.onclick = () => {
+              window.focus();
+              n.close();
+            };
           }
         });
 
