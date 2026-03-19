@@ -1,10 +1,24 @@
 'use client';
 
 import { useEffect, useRef } from 'react';
+import { initializeApp, getApps } from 'firebase/app';
 import { getMessaging, getToken, isSupported } from 'firebase/messaging';
-import { app } from '@/services/firebase';
 
 const VAPID_KEY = process.env.NEXT_PUBLIC_FIREBASE_VAPID_KEY;
+
+const messagingFirebaseConfig = {
+  apiKey: 'AIzaSyDAXVQL_NX21EVPv22fuJuSROa_8v3UbQM',
+  authDomain: 'reclaim-38744.firebaseapp.com',
+  projectId: 'reclaim-38744',
+  storageBucket: 'reclaim-38744.firebasestorage.app',
+  messagingSenderId: '25440715803',
+  appId: '1:25440715803:web:fdfdb0e5d41b579be8e4be',
+};
+
+function getMessagingApp() {
+  const existing = getApps().find((a) => a.name === 'messaging');
+  return existing || initializeApp(messagingFirebaseConfig, 'messaging');
+}
 
 export default function usePushNotifications() {
   const registered = useRef(false);
@@ -20,20 +34,18 @@ export default function usePushNotifications() {
         const supported = await isSupported();
         if (!supported) return;
 
-        // Request permission
         const permission = await Notification.requestPermission();
         if (permission !== 'granted') return;
 
-        const messaging = getMessaging(app);
+        const messagingApp = getMessagingApp();
+        const messaging = getMessaging(messagingApp);
         const fcmToken = await getToken(messaging, { vapidKey: VAPID_KEY });
 
         if (!fcmToken) return;
 
-        // Check if already registered this token
         const storedToken = localStorage.getItem('fcm_token');
         if (storedToken === fcmToken) return;
 
-        // Register with backend
         const res = await fetch('/api/device-tokens', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
