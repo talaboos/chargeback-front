@@ -96,6 +96,9 @@ export default function SubscriptionDetail({ subscription, onCancel, onDelete, o
   const [editAmount, setEditAmount] = useState(subscription.amount || '');
   const [editCycle, setEditCycle] = useState(subscription.billing_cycle || 'monthly');
   const [editStatus, setEditStatus] = useState(subscription.status || 'active');
+  const [editRenewalDate, setEditRenewalDate] = useState(
+    subscription.next_renewal_date ? subscription.next_renewal_date.slice(0, 10) : ''
+  );
 
   const handleSave = async () => {
     setSaving(true);
@@ -109,6 +112,7 @@ export default function SubscriptionDetail({ subscription, onCancel, onDelete, o
           amount: parseFloat(editAmount),
           billing_cycle: editCycle,
           status: editStatus,
+          next_renewal_date: editRenewalDate || null,
         }),
       });
       if (!res.ok) throw new Error('Update failed');
@@ -317,6 +321,15 @@ export default function SubscriptionDetail({ subscription, onCancel, onDelete, o
                 <option value="active">Active</option>
                 <option value="cancelled">Cancelled</option>
               </select>
+            </div>
+            <div className={styles.editField}>
+              <label className={styles.editLabel}>Next Renewal</label>
+              <input
+                className={styles.editInput}
+                type="date"
+                value={editRenewalDate}
+                onChange={(e) => setEditRenewalDate(e.target.value)}
+              />
             </div>
             <div className={styles.editActions}>
               <button className={styles.confirmYes} onClick={handleSave} disabled={saving}>
