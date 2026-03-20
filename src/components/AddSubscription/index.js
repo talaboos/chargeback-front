@@ -25,8 +25,8 @@ const PLATFORMS = [
 const CYCLES = [
   { value: 'weekly', label: 'Week' },
   { value: 'monthly', label: 'Month' },
-  { value: 'quarterly', label: '3 Months' },
-  { value: 'semi_annual', label: '6 Months' },
+  { value: 'quarterly', label: '3 Mos' },
+  { value: 'semi_annual', label: '6 Mos' },
   { value: 'yearly', label: 'Year' },
 ];
 

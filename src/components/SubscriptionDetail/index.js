@@ -313,8 +313,8 @@ export default function SubscriptionDetail({ subscription, onCancel, onDelete, o
               >
                 <option value="weekly">Week</option>
                 <option value="monthly">Month</option>
-                <option value="quarterly">3 Months</option>
-                <option value="semi_annual">6 Months</option>
+                <option value="quarterly">3 Mos</option>
+                <option value="semi_annual">6 Mos</option>
                 <option value="yearly">Year</option>
               </select>
             </div>

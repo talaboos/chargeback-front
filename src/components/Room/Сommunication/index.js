@@ -47,7 +47,6 @@ export default function Communication({ data, user, optimisticMessages = [], onP
 
     return () => {
       if (pusher) {
-        pusher.disconnect();
         pusher.unsubscribe(channelName);
       }
     };
