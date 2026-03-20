@@ -33,7 +33,10 @@ export default function ShortcutPage() {
   const router = useRouter();
 
   useEffect(() => {
-    setIsIOS(/iPad|iPhone|iPod/.test(navigator.userAgent));
+    const ua = navigator.userAgent;
+    const isApple = /iPad|iPhone|iPod/.test(ua) ||
+      (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+    setIsIOS(isApple);
   }, []);
 
   const handleInstall = async () => {

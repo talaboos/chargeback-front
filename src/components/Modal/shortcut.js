@@ -21,7 +21,10 @@ export default function ShortcutModal() {
   const [installed, setInstalled] = useState(false);
 
   useEffect(() => {
-    setIsIOS(/iPad|iPhone|iPod/.test(navigator.userAgent));
+    const ua = navigator.userAgent;
+    const isApple = /iPad|iPhone|iPod/.test(ua) ||
+      (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+    setIsIOS(isApple);
   }, []);
 
   const onClose = (e) => {
