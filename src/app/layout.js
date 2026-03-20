@@ -101,6 +101,11 @@ export default function RootLayout({ children }) {
           href="/favicon-16x16.png"
         />
         <meta name="msapplication-TileImage" content="/ms-icon-144x144.png" />
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `if('serviceWorker' in navigator) navigator.serviceWorker.register('/sw.js').catch(function(){})`,
+          }}
+        />
       </head>
       <body
         suppressHydrationWarning
