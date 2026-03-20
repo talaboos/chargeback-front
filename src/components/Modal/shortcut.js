@@ -64,7 +64,7 @@ export default function ShortcutModal() {
                   style={{ borderRadius: 12 }}
                 />
                 <div className={styles.installAppText}>
-                  <strong>Reclaim AI</strong>
+                  <strong>Reclaim Tool</strong>
                   <span>app.reclaim.tools</span>
                 </div>
               </div>

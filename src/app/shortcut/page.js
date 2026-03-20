@@ -73,7 +73,7 @@ export default function ShortcutPage() {
                   <Image src="/favicon-96x96.png" width={48} height={48} alt="Reclaim" />
                 </div>
                 <div>
-                  <div className={styles.appName}>Reclaim AI</div>
+                  <div className={styles.appName}>Reclaim Tool</div>
                   <div className={styles.appDomain}>app.reclaim.tools</div>
                 </div>
               </div>
