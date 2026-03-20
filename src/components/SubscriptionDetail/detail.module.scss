@@ -108,9 +108,19 @@
   background: transparent;
   outline: none;
   min-width: 120px;
+  max-width: 60%;
   padding: 0;
   -webkit-appearance: none;
   appearance: none;
+
+  &[type='date'] {
+    position: relative;
+    min-height: 22px;
+
+    &::-webkit-date-and-time-value {
+      text-align: right;
+    }
+  }
 }
 
 .editSelect {
