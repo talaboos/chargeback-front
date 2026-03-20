@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
+import { signOut } from 'next-auth/react';
 import { useAtom } from 'jotai/index';
 
 import TapBar from '@/components/TapBar';
@@ -224,12 +225,7 @@ export default function Home() {
 
         <button
           className={styles.logoutBtn}
-          onClick={async () => {
-            try {
-              await fetch('/api/auth/logout', { method: 'POST' });
-            } catch (e) {}
-            window.location.href = '/';
-          }}
+          onClick={() => signOut({ callbackUrl: '/' })}
         >
           Log Out
         </button>
