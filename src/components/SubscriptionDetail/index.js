@@ -18,6 +18,19 @@ function getPlatformLabel(platform) {
   }
 }
 
+const CURRENCIES = [
+  { value: 'USD', label: '$' },
+  { value: 'EUR', label: '€' },
+  { value: 'GBP', label: '£' },
+  { value: 'RUB', label: '₽' },
+  { value: 'UAH', label: '₴' },
+  { value: 'KZT', label: '₸' },
+  { value: 'TRY', label: '₺' },
+  { value: 'JPY', label: '¥' },
+  { value: 'CAD', label: 'C$' },
+  { value: 'AUD', label: 'A$' },
+];
+
 // Deep links for mobile stores
 const STORE_LINKS = {
   app_store: 'https://apps.apple.com/account/subscriptions',
@@ -79,9 +92,11 @@ export default function SubscriptionDetail({ subscription, onCancel, onDelete, o
   const [editAmount, setEditAmount] = useState(subscription.amount || '');
   const [editCycle, setEditCycle] = useState(subscription.billing_cycle || 'monthly');
   const [editStatus, setEditStatus] = useState(subscription.status || 'active');
+  const [editCurrency, setEditCurrency] = useState(subscription.currency || 'USD');
   const [editRenewalDate, setEditRenewalDate] = useState(
     subscription.next_renewal_date ? subscription.next_renewal_date.slice(0, 10) : ''
   );
+  const [confirmingDelete, setConfirmingDelete] = useState(false);
 
   const handleSave = async () => {
     setSaving(true);
@@ -93,6 +108,7 @@ export default function SubscriptionDetail({ subscription, onCancel, onDelete, o
         body: JSON.stringify({
           service_name: editName,
           amount: parseFloat(editAmount),
+          currency: editCurrency,
           billing_cycle: editCycle,
           status: editStatus,
           next_renewal_date: editRenewalDate || null,
@@ -277,6 +293,18 @@ export default function SubscriptionDetail({ subscription, onCancel, onDelete, o
               />
             </div>
             <div className={styles.editField}>
+              <label className={styles.editLabel}>Currency</label>
+              <select
+                className={styles.editSelect}
+                value={editCurrency}
+                onChange={(e) => setEditCurrency(e.target.value)}
+              >
+                {CURRENCIES.map((c) => (
+                  <option key={c.value} value={c.value}>{c.label}</option>
+                ))}
+              </select>
+            </div>
+            <div className={styles.editField}>
               <label className={styles.editLabel}>Period</label>
               <select
                 className={styles.editSelect}
@@ -452,14 +480,28 @@ export default function SubscriptionDetail({ subscription, onCancel, onDelete, o
           </div>
         )}
 
-        {cancelView === 'idle' && (
+        {cancelView === 'idle' && !confirmingDelete && (
           <button
             className={styles.deleteBtn}
-            onClick={handleDelete}
+            onClick={() => setConfirmingDelete(true)}
             disabled={deleting || cancelling}
           >
-            {deleting ? 'Deleting...' : 'Delete Subscription'}
+            Delete Subscription
           </button>
+        )}
+
+        {confirmingDelete && (
+          <div className={styles.confirmCard}>
+            <div className={styles.confirmTitle}>Are you sure you want to delete this subscription?</div>
+            <div className={styles.confirmActions}>
+              <button className={styles.confirmYes} onClick={handleDelete} disabled={deleting}>
+                {deleting ? 'Deleting...' : 'Yes, delete'}
+              </button>
+              <button className={styles.confirmNo} onClick={() => setConfirmingDelete(false)}>
+                No
+              </button>
+            </div>
+          </div>
         )}
       </div>
     </div>
