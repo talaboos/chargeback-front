@@ -13,7 +13,7 @@ export default function PusherProvider({ children }) {
       cluster: process.env.NEXT_PUBLIC_PUSHER_APP_CLUSTER,
       encrypted: true,
       channelAuthorization: {
-        endpoint: '/api/pusher',
+        endpoint: '/api/pusher/auth',
       },
     });
 
