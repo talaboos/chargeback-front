@@ -57,8 +57,11 @@ export default function ShortcutModal() {
       </div>
       <main className={styles.main}>
         <div className={styles.content}>
-          {/* Android / Chrome — native install */}
-          {ready && canInstall && !isIOS && !installed && (
+          {/* iOS — full step-by-step guide (show immediately) */}
+          {isIOS && !installed && <IOSGuide />}
+
+          {/* Non-iOS: wait for install prompt check */}
+          {!isIOS && !installed && ready && canInstall && (
             <div className={styles.installPrompt}>
               <div className={styles.installAppInfo}>
                 <Image
@@ -83,26 +86,6 @@ export default function ShortcutModal() {
           {installed && (
             <div className={styles.installedMessage}>
               Check your home screen!
-            </div>
-          )}
-
-          {/* iOS — full step-by-step guide */}
-          {isIOS && !installed && <IOSGuide />}
-
-          {/* Fallback — only after ready */}
-          {ready && !canInstall && !isIOS && !installed && (
-            <div className={styles.chat}>
-              <Image
-                src="/favicon-96x96.png"
-                width={52}
-                priority
-                height={52}
-                alt="Reclaim"
-                style={{ borderRadius: 12 }}
-              />
-              <div>
-                Open in <strong>Chrome</strong> or <strong>Safari</strong> to install the app.
-              </div>
             </div>
           )}
         </div>

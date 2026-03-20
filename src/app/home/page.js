@@ -16,7 +16,6 @@ import GmailPromo from '@/components/GmailPromo';
 import useFetch from '@/hooks/useFetch';
 import usePushNotifications from '@/hooks/usePushNotifications';
 import { idAtom } from '@/state/atoms/idAtom';
-import { shortcutAtom } from '@/state/atoms/shortcutAtom';
 import { modalAtom } from '@/state/atoms/modalAtom';
 
 import styles from './page.module.scss';
@@ -37,18 +36,22 @@ export default function Home() {
   const [selectedSub, setSelectedSub] = useState(null);
   const [gmailScanning, setGmailScanning] = useState(false);
   const [id, setId] = useAtom(idAtom);
-  const [popup] = useAtom(shortcutAtom);
   const [, setModal] = useAtom(modalAtom);
 
   useEffect(() => {
-    if (popup && popup !== 'done') {
+    try {
+      const stored = localStorage.getItem('shortcut');
+      // Don't show if explicitly dismissed with "Done"
+      if (stored === '"done"') return;
       setModal({
         type: 'window',
         open: true,
         content: <ShortcutModal />,
       });
+    } catch (e) {
+      // localStorage unavailable
     }
-  }, [popup, setModal]);
+  }, [setModal]);
 
   // Detect ?gmail_connected=true after OAuth redirect
   useEffect(() => {
