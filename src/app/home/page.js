@@ -38,20 +38,22 @@ export default function Home() {
   const [id, setId] = useAtom(idAtom);
   const [modal, setModal] = useAtom(modalAtom);
   const shortcutModalOpen = modal?.open && modal?.type === 'window';
+  const [shortcutChecked, setShortcutChecked] = useState(false);
 
   useEffect(() => {
     try {
       const stored = localStorage.getItem('shortcut');
-      // Don't show if explicitly dismissed with "Done"
-      if (stored === '"done"') return;
-      setModal({
-        type: 'window',
-        open: true,
-        content: <ShortcutModal />,
-      });
+      if (stored !== '"done"') {
+        setModal({
+          type: 'window',
+          open: true,
+          content: <ShortcutModal />,
+        });
+      }
     } catch (e) {
       // localStorage unavailable
     }
+    setShortcutChecked(true);
   }, [setModal]);
 
   // Detect ?gmail_connected=true after OAuth redirect
@@ -198,24 +200,11 @@ export default function Home() {
   }, []);
 
   const [gmailError, setGmailError] = useState(null);
-  // Show promo only after shortcut flow is resolved (prevents flicker when shortcut modal opens first)
   const [showGmailPromo, setShowGmailPromo] = useState(() => {
     if (typeof window === 'undefined') return false;
-    if (localStorage.getItem('gmail_promo_dismissed')) return false;
-    // Don't show until shortcut modal is resolved — otherwise it flickers before modal opens
-    const shortcutStatus = localStorage.getItem('shortcut');
-    return shortcutStatus === '"done"';
-  });
 
-  // Show gmail promo after shortcut modal closes (if not already dismissed)
-  useEffect(() => {
-    if (!shortcutModalOpen && !showGmailPromo && !localStorage.getItem('gmail_promo_dismissed')) {
-      const shortcutStatus = localStorage.getItem('shortcut');
-      if (shortcutStatus === '"done"' || shortcutStatus === '"later"') {
-        setShowGmailPromo(true);
-      }
-    }
-  }, [shortcutModalOpen, showGmailPromo]);
+    return !localStorage.getItem('gmail_promo_dismissed');
+  });
 
   // Hide promo once we know user has subs or gmail connected
   useEffect(() => {
@@ -434,7 +423,7 @@ export default function Home() {
           }}
         />
       )}
-      {showGmailPromo && !shortcutModalOpen && (
+      {showGmailPromo && shortcutChecked && !shortcutModalOpen && (
         <GmailPromo
           onConnect={() => {
             localStorage.setItem('gmail_promo_dismissed', '1');

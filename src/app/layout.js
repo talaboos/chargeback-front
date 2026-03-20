@@ -17,6 +17,7 @@ const inter = Inter({
 export const metadata = {
   title: 'Reclaim Tool',
   description: 'Smart subscription tracking',
+  manifest: '/manifest.json',
 };
 
 export default function RootLayout({ children }) {
