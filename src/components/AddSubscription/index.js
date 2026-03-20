@@ -39,7 +39,12 @@ export default function AddSubscription({ onClose, onSave }) {
   const [currency, setCurrency] = useState('USD');
   const [cycle, setCycle] = useState('monthly');
   const [platform, setPlatform] = useState('');
-  const [renewalDate, setRenewalDate] = useState('');
+  const [renewalDate, setRenewalDate] = useState(() => {
+    const d = new Date();
+    d.setMonth(d.getMonth() + 1);
+
+    return d.toISOString().slice(0, 10);
+  });
 
   const handleSubmit = async () => {
     if (!name.trim()) {

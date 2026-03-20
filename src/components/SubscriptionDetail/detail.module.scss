@@ -107,9 +107,11 @@
   border: none;
   background: transparent;
   outline: none;
-  min-width: 120px;
-  max-width: 60%;
+  min-width: 0;
+  flex: 1;
   padding: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .editInput {
