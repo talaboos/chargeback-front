@@ -110,12 +110,14 @@
   min-width: 120px;
   max-width: 60%;
   padding: 0;
+}
+
+.editInput {
   -webkit-appearance: none;
   appearance: none;
 
   &[type='date'] {
-    position: relative;
-    min-height: 22px;
+    min-height: 34px;
 
     &::-webkit-date-and-time-value {
       text-align: right;
@@ -126,6 +128,7 @@
 .editSelect {
   cursor: pointer;
   padding-right: 4px;
+  text-align-last: right;
 }
 
 .editActions {
