@@ -462,7 +462,7 @@ export default function SubscriptionDetail({ subscription, onCancel, onDelete, o
         )}
 
         {/* Default actions */}
-        {cancelView === 'idle' && !isInactive && (
+        {cancelView === 'idle' && !isInactive && !editing && (
           <button
             className={styles.cancelBtn}
             onClick={handleCancelStart}
@@ -472,7 +472,7 @@ export default function SubscriptionDetail({ subscription, onCancel, onDelete, o
           </button>
         )}
 
-        {cancelView === 'idle' && !isInactive && renewalDate && (
+        {cancelView === 'idle' && !isInactive && !editing && renewalDate && (
           <div className={styles.cancelHint}>
             {strategy.type === 'store_redirect'
               ? `You'll be redirected to ${strategy.label} to manage your subscription.`
@@ -482,7 +482,7 @@ export default function SubscriptionDetail({ subscription, onCancel, onDelete, o
           </div>
         )}
 
-        {cancelView === 'idle' && !confirmingDelete && (
+        {cancelView === 'idle' && !confirmingDelete && !editing && (
           <button
             className={styles.deleteBtn}
             onClick={() => setConfirmingDelete(true)}
