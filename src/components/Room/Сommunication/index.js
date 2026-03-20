@@ -8,7 +8,7 @@ import { usePusher } from '@/state/contexts/pusherProvider';
 
 import styles from './communication.module.scss';
 
-export default function Communication({ data, user }) {
+export default function Communication({ data, user, optimisticMessages = [], onPusherMessage }) {
   const messageEndRef = useRef(null);
   const [messages, setMessages] = useState(data);
   const [typing, setTyping] = useState(false);
@@ -20,7 +20,7 @@ export default function Communication({ data, user }) {
 
   useEffect(() => {
     scrollTobottom();
-  }, [messages, typing]);
+  }, [messages, typing, optimisticMessages]);
 
   useEffect(() => {
     connectPusher();
@@ -35,6 +35,7 @@ export default function Communication({ data, user }) {
         const { data: response } = res;
 
         setMessages((prev) => [...prev, response]);
+        if (onPusherMessage) onPusherMessage(response);
       }
       if (event === 'typing.started') {
         setTyping(true);
@@ -88,6 +89,11 @@ export default function Communication({ data, user }) {
             return null;
           })()}
         </Fragment>
+      ))}
+      {optimisticMessages.map((message) => (
+        <div key={message.id} className={`${styles.message} ${styles.user}`}>
+          {message.content}
+        </div>
       ))}
       {typing && <Typing />}
       <div className={styles.end} ref={messageEndRef} />

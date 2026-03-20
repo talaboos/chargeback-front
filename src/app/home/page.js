@@ -198,11 +198,24 @@ export default function Home() {
   }, []);
 
   const [gmailError, setGmailError] = useState(null);
-  // Show promo instantly if localStorage flag not set (hide later if gmail connected or subs exist)
+  // Show promo only after shortcut flow is resolved (prevents flicker when shortcut modal opens first)
   const [showGmailPromo, setShowGmailPromo] = useState(() => {
     if (typeof window === 'undefined') return false;
-    return !localStorage.getItem('gmail_promo_dismissed');
+    if (localStorage.getItem('gmail_promo_dismissed')) return false;
+    // Don't show until shortcut modal is resolved — otherwise it flickers before modal opens
+    const shortcutStatus = localStorage.getItem('shortcut');
+    return shortcutStatus === '"done"';
   });
+
+  // Show gmail promo after shortcut modal closes (if not already dismissed)
+  useEffect(() => {
+    if (!shortcutModalOpen && !showGmailPromo && !localStorage.getItem('gmail_promo_dismissed')) {
+      const shortcutStatus = localStorage.getItem('shortcut');
+      if (shortcutStatus === '"done"' || shortcutStatus === '"later"') {
+        setShowGmailPromo(true);
+      }
+    }
+  }, [shortcutModalOpen, showGmailPromo]);
 
   // Hide promo once we know user has subs or gmail connected
   useEffect(() => {

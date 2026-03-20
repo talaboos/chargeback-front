@@ -1,8 +1,7 @@
 import { getServerSession } from 'next-auth';
 import { redirect } from 'next/navigation';
 
-import Communication from '@/components/Room/Сommunication';
-import Message from '@/components/Room/Message';
+import ChatRoom from '@/components/Room/ChatRoom';
 import TapBar from '@/components/TapBar';
 
 import { authOptions } from '@/services/auth';
@@ -42,8 +41,7 @@ export default async function Home() {
       </header>
       <main className={styles.main}>
         <div className={styles.content}>
-          <Communication data={sortData} user={id} />
-          <Message id={chatId} />
+          <ChatRoom data={sortData} user={id} chatId={chatId} />
         </div>
         <TapBar current="assistant" />
       </main>
