@@ -9,12 +9,25 @@ export default function PusherProvider({ children }) {
   const [pusher, setPusher] = useState(null);
 
   const connectPusher = () => {
-    const newPusher = new Pusher(process.env.NEXT_PUBLIC_PUSHER_APP_KEY, {
-      cluster: process.env.NEXT_PUBLIC_PUSHER_APP_CLUSTER,
+    if (pusher) return;
+    const key = process.env.NEXT_PUBLIC_PUSHER_APP_KEY;
+    const cluster = process.env.NEXT_PUBLIC_PUSHER_APP_CLUSTER;
+
+    if (!key) {
+      console.error('[Pusher] NEXT_PUBLIC_PUSHER_APP_KEY is not set');
+      return;
+    }
+
+    const newPusher = new Pusher(key, {
+      cluster,
       encrypted: true,
       channelAuthorization: {
         endpoint: '/api/pusher/auth',
       },
+    });
+
+    newPusher.connection.bind('error', (err) => {
+      console.error('[Pusher] connection error:', err);
     });
 
     setPusher(newPusher);
