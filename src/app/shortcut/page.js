@@ -28,7 +28,7 @@ function DownloadIcon() {
 }
 
 export default function ShortcutPage() {
-  const { canInstall, install } = useInstallPrompt();
+  const { canInstall, install, ready } = useInstallPrompt();
   const [isIOS, setIsIOS] = useState(false);
   const [installed, setInstalled] = useState(false);
   const [, setPopup] = useAtom(shortcutAtom);
@@ -77,8 +77,11 @@ export default function ShortcutPage() {
         <div className={styles.heading}>Add to Home Screen</div>
       </header>
       <main>
+        {/* Wait for beforeinstallprompt check */}
+        {!ready && !isIOS && null}
+
         {/* Android / Chrome / Edge — native install prompt */}
-        {canInstall && !isIOS && !installed && (
+        {ready && canInstall && !isIOS && !installed && (
           <div className={styles.guide}>
             <div className={styles.installPrompt}>
               <div className={styles.appInfo}>
@@ -111,8 +114,8 @@ export default function ShortcutPage() {
         {/* iOS — show manual instructions */}
         {isIOS && <IOSGuide />}
 
-        {/* Fallback: no prompt available, not iOS */}
-        {!canInstall && !isIOS && !installed && (
+        {/* Fallback: no prompt available, not iOS — only show after ready */}
+        {ready && !canInstall && !isIOS && !installed && (
           <div className={styles.guide}>
             <div className={styles.fallbackMessage}>
               <p>Open this page in <strong>Chrome</strong> or <strong>Safari</strong> to install the app on your device.</p>

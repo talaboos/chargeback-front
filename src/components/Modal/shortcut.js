@@ -15,7 +15,7 @@ import styles from './modal.module.scss';
 export default function ShortcutModal() {
   const [, setModal] = useAtom(modalAtom);
   const [, setPopup] = useAtom(shortcutAtom);
-  const { canInstall, install } = useInstallPrompt();
+  const { canInstall, install, ready } = useInstallPrompt();
   const [isIOS, setIsIOS] = useState(false);
   const [installed, setInstalled] = useState(false);
 
@@ -58,7 +58,7 @@ export default function ShortcutModal() {
       <main className={styles.main}>
         <div className={styles.content}>
           {/* Android / Chrome — native install */}
-          {canInstall && !isIOS && !installed && (
+          {ready && canInstall && !isIOS && !installed && (
             <div className={styles.installPrompt}>
               <div className={styles.installAppInfo}>
                 <Image
@@ -89,8 +89,8 @@ export default function ShortcutModal() {
           {/* iOS — full step-by-step guide */}
           {isIOS && !installed && <IOSGuide />}
 
-          {/* Fallback */}
-          {!canInstall && !isIOS && !installed && (
+          {/* Fallback — only after ready */}
+          {ready && !canInstall && !isIOS && !installed && (
             <div className={styles.chat}>
               <Image
                 src="/favicon-96x96.png"
