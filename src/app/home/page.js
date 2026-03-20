@@ -23,11 +23,11 @@ import styles from './page.module.scss';
 
 function formatTotal(amount, currency) {
   const num = parseFloat(amount);
-  if (isNaN(num)) return '$0.00';
-  return new Intl.NumberFormat('en-US', {
+  const val = isNaN(num) ? 0 : num;
+  return new Intl.NumberFormat(undefined, {
     style: 'currency',
     currency: currency || 'USD',
-  }).format(num);
+  }).format(val);
 }
 
 export default function Home() {

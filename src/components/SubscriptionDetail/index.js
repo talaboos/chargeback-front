@@ -2,25 +2,8 @@
 
 import { useState, useEffect, useRef } from 'react';
 import { getCachedStage, setCachedStage, getLogoSrc } from '@/utils/logoCache';
+import { formatAmount, formatDate } from '@/utils/format';
 import styles from './detail.module.scss';
-
-function formatDate(dateStr) {
-  if (!dateStr) return null;
-  const date = new Date(dateStr);
-  return date.toLocaleDateString('en-US', {
-    month: 'long',
-    day: 'numeric',
-  });
-}
-
-function formatAmount(amount, currency) {
-  const num = parseFloat(amount);
-  if (isNaN(num) || num === 0) return '\u2014';
-  return new Intl.NumberFormat('en-US', {
-    style: 'currency',
-    currency: currency || 'USD',
-  }).format(num);
-}
 
 function getInitial(name) {
   return name ? name.charAt(0).toUpperCase() : '?';

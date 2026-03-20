@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { getCachedStage, setCachedStage, getLogoSrc } from '@/utils/logoCache';
+import { formatAmount as fmtAmount, formatDate } from '@/utils/format';
 import styles from './card.module.scss';
 
 function getInitial(name) {
@@ -14,23 +15,17 @@ function formatRenewal(subscription) {
   if (status === 'cancelled' || status === 'expired') {
     const date = subscription_end_date || next_renewal_date;
     if (!date) return status === 'cancelled' ? 'Cancelled' : 'Expired';
-    const d = new Date(date);
     const label = status === 'cancelled' ? 'Expires' : 'Expired';
-    return `${label} ${d.toLocaleDateString('en-US', { day: 'numeric', month: 'long' })}`;
+    return `${label} ${formatDate(date)}`;
   }
 
   if (!next_renewal_date) return null;
-  const d = new Date(next_renewal_date);
-  return `Renews ${d.toLocaleDateString('en-US', { day: 'numeric', month: 'long' })}`;
+  return `Renews ${formatDate(next_renewal_date)}`;
 }
 
 function formatAmount(amount, currency) {
-  const num = parseFloat(amount);
-  if (isNaN(num) || num === 0) return null;
-  return new Intl.NumberFormat('en-US', {
-    style: 'currency',
-    currency: currency || 'USD',
-  }).format(num);
+  const result = fmtAmount(amount, currency);
+  return result === '\u2014' ? null : result;
 }
 
 export default function SubscriptionCard({ subscription, onClick }) {
