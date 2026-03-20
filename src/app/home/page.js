@@ -36,7 +36,8 @@ export default function Home() {
   const [selectedSub, setSelectedSub] = useState(null);
   const [gmailScanning, setGmailScanning] = useState(false);
   const [id, setId] = useAtom(idAtom);
-  const [, setModal] = useAtom(modalAtom);
+  const [modal, setModal] = useAtom(modalAtom);
+  const shortcutModalOpen = modal?.open && modal?.type === 'window';
 
   useEffect(() => {
     try {
@@ -420,7 +421,7 @@ export default function Home() {
           }}
         />
       )}
-      {showGmailPromo && (
+      {showGmailPromo && !shortcutModalOpen && (
         <GmailPromo
           onConnect={() => {
             localStorage.setItem('gmail_promo_dismissed', '1');
