@@ -1,100 +1,414 @@
 .page {
   position: relative;
-  height: 100dvh;
-  padding: 0 24px;
-  display: flex;
-  flex-direction: column;
-  background: #FFF;
-}
-
-.main {
-  margin: 0 auto;
-  padding-bottom: 25px;
-  width: 100%;
-  max-width: 400px;
+  min-height: 100dvh;
+  padding: 0 16px;
   display: flex;
   flex-direction: column;
   align-items: center;
-  flex: 1 1 auto;
+  background: #f2f2f2;
 }
 
 .header {
-  padding: 24px 0 40px;
-  position: relative;
-  z-index: 5;
-
-  &>div {
-    margin: 0 auto;
-  }
-}
-
-.content {
-  position: relative;
-  z-index: 2;
-  display: flex;
-  flex-direction: column;
-  gap: 40px;
-  align-items: center;
-  overflow: hidden;
-  width: 100%;
-  flex: 1 0 auto;
-  padding-bottom: 40px;
+  padding: 32px 0 24px;
+  text-align: center;
 }
 
 .heading {
-  font-size: 24px;
-  font-style: normal;
+  font-size: 22px;
   font-weight: 700;
   line-height: 28px;
-  text-align: center;
-  color: #1A1A2E;
-  white-space: break-spaces;
-
-  span {
-    display: block;
-    color: #80808A;
-    font-size: 16px;
-    font-style: normal;
-    font-weight: 500;
-    line-height: normal;
-    letter-spacing: -0.32px;
-    padding-top: 16px;
-    white-space: break-spaces;
-  }
+  color: #1a1a2e;
 }
 
-.chat {
+.guide {
+  width: 100%;
+  max-width: 410px;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  padding-bottom: 40px;
+}
+
+/* Step row */
+.step {
+  display: flex;
+  align-items: stretch;
+}
+
+.stepLeft {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 48px;
+  flex-shrink: 0;
+}
+
+.stepNumber {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: #3b6de7;
+  color: #fff;
+  font-size: 16px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.stepCheck {
+  composes: stepNumber;
+  background: #3b6de7;
+  font-size: 18px;
+}
+
+.dashedLine {
+  flex: 1;
+  width: 2px;
+  border-left: 2px dashed #8eaaef;
+  margin: 6px 0;
+  min-height: 24px;
+}
+
+.stepContent {
+  flex: 1;
+  padding-bottom: 28px;
+}
+
+.stepTitle {
+  font-size: 18px;
+  font-weight: 700;
+  line-height: 24px;
+  color: #1a1a2e;
+  margin-bottom: 14px;
+  padding-top: 4px;
+}
+
+/* Cards */
+.card {
+  background: #fff;
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.06);
+}
+
+/* iOS Safari bar */
+.safariBar {
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  padding: 12px 16px;
+}
+
+.safariIcon {
+  color: #c0c0c0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.safariIconActive {
+  composes: safariIcon;
+  background: #e8f0fe;
+  color: #3b6de7;
+  border-radius: 12px;
+  padding: 10px;
+}
+
+/* Menu rows */
+.menuRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 16px;
+  border-bottom: 1px solid #f0f0f0;
+  font-size: 15px;
+  font-weight: 500;
+  color: #1a1a2e;
+}
+
+.menuRow:last-child {
+  border-bottom: none;
+}
+
+.menuRowHighlight {
+  composes: menuRow;
+  background: #eef3ff;
+}
+
+.menuRowDim {
+  composes: menuRow;
+  opacity: 0.5;
+}
+
+.menuIcon {
+  width: 22px;
+  height: 22px;
+  color: #666;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Android top bar */
+.androidBar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 16px;
+}
+
+.androidUrlBar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: #f0f0f0;
+  border-radius: 20px;
+  padding: 6px 12px;
+  flex: 1;
+  margin-right: 12px;
+}
+
+.androidUrlDot {
+  width: 14px;
+  height: 14px;
+  background: #ccc;
+  border-radius: 50%;
+}
+
+.androidUrlText {
+  color: #aaa;
+  font-size: 13px;
+}
+
+.androidBarRight {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.androidTabCount {
+  width: 22px;
+  height: 22px;
+  border: 2px solid #ccc;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 10px;
+  font-weight: 700;
+  color: #aaa;
+}
+
+.androidDotsActive {
+  background: #e8f0fe;
+  border-radius: 8px;
+  padding: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #3b6de7;
+}
+
+/* Android menu with icon left */
+.androidMenuRow {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 14px 16px;
+  border-bottom: 1px solid #f0f0f0;
+  font-size: 15px;
+  font-weight: 500;
+  color: #1a1a2e;
+}
+
+.androidMenuRow:last-child {
+  border-bottom: none;
+}
+
+.androidMenuRowHighlight {
+  composes: androidMenuRow;
+  background: #eef3ff;
+}
+
+.androidMenuRowDim {
+  composes: androidMenuRow;
+  opacity: 0.5;
+}
+
+.androidMenuIcon {
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #555;
+}
+
+/* Confirm bar (iOS) */
+.confirmBar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 16px;
+  background: #f8f8f8;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.confirmCancel {
+  color: #aaa;
+  font-size: 15px;
+  font-weight: 500;
+}
+
+.confirmTitle {
+  font-size: 15px;
+  font-weight: 700;
+  color: #1a1a2e;
+}
+
+.confirmAdd {
+  color: #3b6de7;
+  font-size: 15px;
+  font-weight: 700;
+}
+
+/* App info row */
+.appInfo {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 16px;
+}
+
+.appLogo {
+  width: 48px;
+  height: 48px;
+  border-radius: 12px;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+.appName {
+  font-size: 16px;
+  font-weight: 600;
+  color: #1a1a2e;
+}
+
+.appDomain {
+  font-size: 13px;
+  color: #aaa;
+  margin-top: 2px;
+}
+
+/* Android install dialog */
+.installDialog {
+  padding: 24px;
+}
+
+.installTitle {
+  font-size: 20px;
+  font-weight: 500;
+  color: #1a1a2e;
+  margin-bottom: 20px;
+}
+
+.installActions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 24px;
+  margin-top: 24px;
+}
+
+.installCancel {
+  color: #999;
+  font-size: 15px;
+  font-weight: 700;
+  background: none;
+  border: none;
+}
+
+.installBtn {
+  color: #3b6de7;
+  font-size: 15px;
+  font-weight: 700;
+  background: none;
+  border: none;
+}
+
+/* Native install prompt (Android/Chrome) */
+.installPrompt {
+  background: #fff;
+  border-radius: 20px;
+  padding: 28px 24px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 24px;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+}
+
+.installButton {
   width: 100%;
   display: flex;
   align-items: center;
-  justify-content: flex-start;
-  gap: 8px;
+  justify-content: center;
+  gap: 10px;
+  padding: 16px 24px;
+  background: #3b6de7;
+  color: #fff;
+  border: none;
+  border-radius: 14px;
+  font-size: 17px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.2s;
 
-  div {
-    border-radius: 24px 24px 24px 0;
-    background: #F4F4F4;
-    width: fit-content;
-    padding: 12px 16px;
-    color: #1A1A2E;
-    font-size: 16px;
-    font-style: normal;
-    font-weight: 500;
-    line-height: normal;
-    letter-spacing: -0.32px;
+  &:hover {
+    background: #2d5bd6;
+  }
+
+  &:active {
+    background: #244fb8;
   }
 }
 
-.instructions {
-  width: 100%;
+/* Success message */
+.successMessage {
+  background: #fff;
+  border-radius: 20px;
+  padding: 32px 24px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+}
 
-  div {
-    padding-bottom: 16px;
-    color: #1A1A2E;
-    font-size: 16px;
-    font-style: normal;
-    font-weight: 700;
-    line-height: normal;
-    letter-spacing: -0.32px;
-    text-align: center;
-  }
+.successText {
+  font-size: 18px;
+  font-weight: 600;
+  color: #1a1a2e;
+  text-align: center;
+}
+
+/* Fallback */
+.fallbackMessage {
+  background: #fff;
+  border-radius: 20px;
+  padding: 28px 24px;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+  font-size: 16px;
+  line-height: 24px;
+  color: #555;
+  text-align: center;
+}
+
+/* Bottom button */
+.bottomButton {
+  width: 100%;
+  max-width: 410px;
+  padding: 24px 0 40px;
+  margin-top: auto;
 }

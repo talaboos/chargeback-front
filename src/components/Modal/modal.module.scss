@@ -490,6 +490,60 @@
         }
     }
 
+    .installPrompt {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 20px;
+        margin-bottom: 24px;
+    }
+
+    .installAppInfo {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+    }
+
+    .installAppText {
+        display: flex;
+        flex-direction: column;
+        gap: 2px;
+
+        strong {
+            font-size: 16px;
+            color: #1A1A2E;
+        }
+
+        span {
+            font-size: 13px;
+            color: #aaa;
+        }
+    }
+
+    .installButton {
+        width: 100%;
+        padding: 16px 24px;
+        background: #3b6de7;
+        color: #fff;
+        border: none;
+        border-radius: 14px;
+        font-size: 17px;
+        font-weight: 700;
+        cursor: pointer;
+
+        &:active {
+            background: #244fb8;
+        }
+    }
+
+    .installedMessage {
+        text-align: center;
+        font-size: 18px;
+        font-weight: 600;
+        color: #1A1A2E;
+        padding: 20px 0;
+    }
+
     .bottom {
         z-index: 10;
         position: fixed;
