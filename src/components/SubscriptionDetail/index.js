@@ -226,13 +226,7 @@ export default function SubscriptionDetail({ subscription, onCancel, onDelete, o
   const cycle = subscription.billing_cycle;
 
   // Cancel button label
-  const cancelBtnLabel = (() => {
-    if (cancelling) return 'Cancelling...';
-    if (strategy.type === 'store_redirect') return `Cancel in ${strategy.label}`;
-    if (strategy.type === 'web_redirect') return 'Cancel on Website';
-    if (strategy.type === 'instructions_only') return 'How to Cancel';
-    return 'Cancel Subscription';
-  })();
+  const cancelBtnLabel = cancelling ? 'Cancelling...' : 'Cancel';
 
   return (
     <div className={styles.overlay} onClick={onClose}>

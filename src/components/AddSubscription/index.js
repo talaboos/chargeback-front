@@ -3,6 +3,19 @@
 import { useState } from 'react';
 import styles from './form.module.scss';
 
+const CURRENCIES = [
+  { value: 'USD', label: '$ USD' },
+  { value: 'EUR', label: '€ EUR' },
+  { value: 'GBP', label: '£ GBP' },
+  { value: 'RUB', label: '₽ RUB' },
+  { value: 'UAH', label: '₴ UAH' },
+  { value: 'KZT', label: '₸ KZT' },
+  { value: 'TRY', label: '₺ TRY' },
+  { value: 'JPY', label: '¥ JPY' },
+  { value: 'CAD', label: 'C$ CAD' },
+  { value: 'AUD', label: 'A$ AUD' },
+];
+
 const PLATFORMS = [
   { value: 'app_store', label: 'App Store' },
   { value: 'play_store', label: 'Google Play' },
@@ -100,14 +113,15 @@ export default function AddSubscription({ onClose, onSave }) {
             </div>
             <div className={styles.fieldSmall}>
               <label className={styles.label}>Currency</label>
-              <input
+              <select
                 className={styles.input}
-                type="text"
-                maxLength={3}
-                placeholder="USD"
                 value={currency}
-                onChange={(e) => setCurrency(e.target.value.toUpperCase())}
-              />
+                onChange={(e) => setCurrency(e.target.value)}
+              >
+                {CURRENCIES.map((c) => (
+                  <option key={c.value} value={c.value}>{c.label}</option>
+                ))}
+              </select>
             </div>
           </div>
 
