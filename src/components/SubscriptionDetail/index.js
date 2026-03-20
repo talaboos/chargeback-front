@@ -311,9 +311,11 @@ export default function SubscriptionDetail({ subscription, onCancel, onDelete, o
                 value={editCycle}
                 onChange={(e) => setEditCycle(e.target.value)}
               >
-                <option value="weekly">Weekly</option>
-                <option value="monthly">Monthly</option>
-                <option value="yearly">Yearly</option>
+                <option value="weekly">Week</option>
+                <option value="monthly">Month</option>
+                <option value="quarterly">3 Months</option>
+                <option value="semi_annual">6 Months</option>
+                <option value="yearly">Year</option>
               </select>
             </div>
             <div className={styles.editField}>

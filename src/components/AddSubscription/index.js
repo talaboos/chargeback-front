@@ -23,9 +23,11 @@ const PLATFORMS = [
 ];
 
 const CYCLES = [
-  { value: 'weekly', label: 'Weekly' },
-  { value: 'monthly', label: 'Monthly' },
-  { value: 'yearly', label: 'Yearly' },
+  { value: 'weekly', label: 'Week' },
+  { value: 'monthly', label: 'Month' },
+  { value: 'quarterly', label: '3 Months' },
+  { value: 'semi_annual', label: '6 Months' },
+  { value: 'yearly', label: 'Year' },
 ];
 
 export default function AddSubscription({ onClose, onSave }) {
