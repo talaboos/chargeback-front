@@ -75,12 +75,15 @@ export default function AddSubscription({ onClose, onSave }) {
         }),
       });
 
-      if (!res.ok) throw new Error('Failed to create subscription');
+      if (!res.ok) {
+        const body = await res.json().catch(() => null);
+        throw new Error(body?.message || 'Failed to create subscription');
+      }
       onSave?.();
       onClose();
     } catch (err) {
       console.error('Create failed:', err);
-      setError('Failed to save. Please try again.');
+      setError(err.message || 'Something went wrong');
     } finally {
       setSaving(false);
     }
