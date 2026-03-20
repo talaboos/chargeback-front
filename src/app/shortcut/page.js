@@ -3,9 +3,10 @@
 import { useEffect, useState } from 'react';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
+import { useAtom } from 'jotai/index';
 import useInstallPrompt from '@/hooks/useInstallPrompt';
 import IOSGuide from '@/components/InstallGuide/IOSGuide';
-import Button from '@/components/Controls/Buttons/button';
+import { shortcutAtom } from '@/state/atoms/shortcutAtom';
 import styles from './page.module.scss';
 
 function CheckIcon() {
@@ -30,6 +31,7 @@ export default function ShortcutPage() {
   const { canInstall, install } = useInstallPrompt();
   const [isIOS, setIsIOS] = useState(false);
   const [installed, setInstalled] = useState(false);
+  const [, setPopup] = useAtom(shortcutAtom);
   const router = useRouter();
 
   useEffect(() => {
@@ -43,7 +45,18 @@ export default function ShortcutPage() {
     const accepted = await install();
     if (accepted) {
       setInstalled(true);
+      setPopup('done');
     }
+  };
+
+  const onDone = () => {
+    setPopup('done');
+    router.push('/home');
+  };
+
+  const onRemindLater = () => {
+    setPopup('later');
+    router.push('/home');
   };
 
   // Already installed as PWA
@@ -53,7 +66,7 @@ export default function ShortcutPage() {
         <header className={styles.header}>
           <div className={styles.heading}>App is already installed!</div>
         </header>
-        <Button url="/home">Got it!</Button>
+        <button className={styles.doneButton} onClick={onDone}>Done</button>
       </div>
     );
   }
@@ -109,7 +122,8 @@ export default function ShortcutPage() {
       </main>
 
       <div className={styles.bottomButton}>
-        <Button url="/home">Got it!</Button>
+        <button className={styles.doneButton} onClick={onDone}>Done</button>
+        <button className={styles.remindButton} onClick={onRemindLater}>Remind me later</button>
       </div>
     </div>
   );

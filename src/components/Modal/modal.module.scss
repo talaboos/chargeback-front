@@ -544,6 +544,45 @@
         padding: 20px 0;
     }
 
+    .shortcutActions {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        width: 100%;
+        padding-top: 8px;
+    }
+
+    .doneButton {
+        width: 100%;
+        padding: 16px 24px;
+        background: #3b6de7;
+        color: #fff;
+        border: none;
+        border-radius: 14px;
+        font-size: 17px;
+        font-weight: 700;
+        cursor: pointer;
+
+        &:active {
+            background: #244fb8;
+        }
+    }
+
+    .remindButton {
+        width: 100%;
+        padding: 14px 24px;
+        background: none;
+        color: #94949E;
+        border: none;
+        font-size: 15px;
+        font-weight: 600;
+        cursor: pointer;
+
+        &:active {
+            color: #1A1A2E;
+        }
+    }
+
     .bottom {
         z-index: 10;
         position: fixed;

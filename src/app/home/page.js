@@ -41,7 +41,7 @@ export default function Home() {
   const [, setModal] = useAtom(modalAtom);
 
   useEffect(() => {
-    if (popup) {
+    if (popup && popup !== 'done') {
       setModal({
         type: 'window',
         open: true,

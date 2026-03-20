@@ -405,10 +405,44 @@
   text-align: center;
 }
 
-/* Bottom button */
+/* Bottom buttons */
 .bottomButton {
   width: 100%;
   max-width: 410px;
   padding: 24px 0 40px;
   margin-top: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.doneButton {
+  width: 100%;
+  padding: 16px 24px;
+  background: #3b6de7;
+  color: #fff;
+  border: none;
+  border-radius: 14px;
+  font-size: 17px;
+  font-weight: 700;
+  cursor: pointer;
+
+  &:active {
+    background: #244fb8;
+  }
+}
+
+.remindButton {
+  width: 100%;
+  padding: 14px 24px;
+  background: none;
+  color: #94949E;
+  border: none;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+
+  &:active {
+    color: #1A1A2E;
+  }
 }

@@ -4,7 +4,6 @@ import { useEffect, useState } from 'react';
 import { useAtom } from 'jotai/index';
 import Image from 'next/image';
 
-import Button from '@/components/Controls/Buttons/button';
 import IOSGuide from '@/components/InstallGuide/IOSGuide';
 import useInstallPrompt from '@/hooks/useInstallPrompt';
 
@@ -27,10 +26,18 @@ export default function ShortcutModal() {
     setIsIOS(isApple);
   }, []);
 
-  const onClose = (e) => {
+  const closeModal = () => setModal({ open: false });
+
+  const onDone = (e) => {
     e.preventDefault();
-    setPopup(false);
-    setModal({ open: false });
+    setPopup('done');
+    closeModal();
+  };
+
+  const onRemindLater = (e) => {
+    e.preventDefault();
+    setPopup('later');
+    closeModal();
   };
 
   const handleInstall = async (e) => {
@@ -38,10 +45,8 @@ export default function ShortcutModal() {
     const accepted = await install();
     if (accepted) {
       setInstalled(true);
-      setTimeout(() => {
-        setPopup(false);
-        setModal({ open: false });
-      }, 1500);
+      setPopup('done');
+      setTimeout(closeModal, 1500);
     }
   };
 
@@ -102,9 +107,14 @@ export default function ShortcutModal() {
           )}
         </div>
         {!installed && (
-          <Button url="/" onClick={onClose}>
-            Got it!
-          </Button>
+          <div className={styles.shortcutActions}>
+            <button className={styles.doneButton} onClick={onDone}>
+              Done
+            </button>
+            <button className={styles.remindButton} onClick={onRemindLater}>
+              Remind me later
+            </button>
+          </div>
         )}
       </main>
     </div>
