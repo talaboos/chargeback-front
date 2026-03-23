@@ -10,7 +10,7 @@ import ShortcutModal from '@/components/Modal/shortcut';
 import SubscriptionCard from '@/components/SubscriptionCard';
 import SubscriptionDetail from '@/components/SubscriptionDetail';
 import AddSubscription from '@/components/AddSubscription';
-import GmailScanProgress from '@/components/GmailScanProgress';
+import GmailSyncBanner from '@/components/GmailSyncBanner';
 import GmailPromo from '@/components/GmailPromo';
 
 import useFetch from '@/hooks/useFetch';
@@ -34,11 +34,11 @@ export default function Home() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [manualAddOpen, setManualAddOpen] = useState(false);
   const [selectedSub, setSelectedSub] = useState(null);
-  const [gmailScanning, setGmailScanning] = useState(false);
   const [id, setId] = useAtom(idAtom);
   const [modal, setModal] = useAtom(modalAtom);
   const shortcutModalOpen = modal?.open && modal?.type === 'window';
   const [shortcutChecked, setShortcutChecked] = useState(false);
+  const gmailBannerRef = useRef(null);
 
   useEffect(() => {
     try {
@@ -56,16 +56,17 @@ export default function Home() {
     setShortcutChecked(true);
   }, [setModal]);
 
-  // Detect ?gmail_connected=true after OAuth redirect
+  // Detect ?gmail_connected=true after OAuth redirect — auto-trigger scan
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     if (params.get('gmail_connected') === 'true') {
-      // Remove the query param from URL without reload
       const url = new URL(window.location.href);
       url.searchParams.delete('gmail_connected');
       window.history.replaceState({}, '', url.pathname + url.search);
-      // Auto-trigger scan
-      setGmailScanning(true);
+      // Trigger scan via banner ref (with small delay to ensure mount)
+      setTimeout(() => {
+        gmailBannerRef.current?.triggerScan();
+      }, 300);
     }
   }, []);
 
@@ -96,26 +97,21 @@ export default function Home() {
   const totalsByCurrency = subsData?.totals_by_currency || {};
 
   const subscriptions = [...rawSubscriptions].sort((a, b) => {
-    // Gmail-sourced subscriptions go after manually added / screenshot ones
     const aIsGmail = a.source === 'gmail';
     const bIsGmail = b.source === 'gmail';
 
     if (aIsGmail && bIsGmail) {
-      // Both gmail — sort A-Z by name
       return (a.service_name || '').localeCompare(b.service_name || '');
     }
     if (aIsGmail !== bIsGmail) {
-      // Non-gmail (newer added) first
       return aIsGmail ? 1 : -1;
     }
-    // Both non-gmail — newest first by created_at
     return new Date(b.created_at) - new Date(a.created_at);
   });
 
   const activeSubs = subscriptions.filter((s) => s.status === 'active');
   const inactiveSubs = subscriptions.filter((s) => s.status !== 'active');
 
-  // Group active subs by platform
   const appleSubs = activeSubs.filter((s) => s.platform === 'app_store');
   const googleSubs = activeSubs.filter((s) => s.platform === 'play_store');
   const webSubs = activeSubs.filter((s) => s.platform === 'web');
@@ -165,7 +161,7 @@ export default function Home() {
       if (pollRef.current) clearInterval(pollRef.current);
       setProcessing(true);
       let attempts = 0;
-      const maxAttempts = 30; // 30 * 2s = 60s max
+      const maxAttempts = 30;
 
       pollRef.current = setInterval(async () => {
         attempts++;
@@ -176,7 +172,7 @@ export default function Home() {
             if (json.status === 'completed' || json.status === 'success') {
               clearInterval(pollRef.current);
               setProcessing(false);
-              mutate(); // refresh subscriptions list
+              mutate();
             }
           }
         } catch (err) {
@@ -186,7 +182,7 @@ export default function Home() {
         if (attempts >= maxAttempts) {
           clearInterval(pollRef.current);
           setProcessing(false);
-          mutate(); // try refresh anyway
+          mutate();
         }
       }, 2000);
     },
@@ -202,11 +198,9 @@ export default function Home() {
   const [gmailError, setGmailError] = useState(null);
   const [showGmailPromo, setShowGmailPromo] = useState(() => {
     if (typeof window === 'undefined') return false;
-
     return !localStorage.getItem('gmail_promo_dismissed');
   });
 
-  // Hide promo once we know user has subs or gmail connected
   useEffect(() => {
     if (!showGmailPromo) return;
     if (!loading && rawSubscriptions.length > 0) {
@@ -226,18 +220,17 @@ export default function Home() {
   const handleGmailConnect = useCallback(async () => {
     setGmailError(null);
     try {
-      // Check if already connected
       const statusRes = await fetch('/api/gmail/status');
       if (statusRes.ok) {
         const statusData = await statusRes.json();
         if (statusData.connected) {
           setShowGmailPromo(false);
-          setGmailScanning(true);
+          // Trigger async scan via banner
+          gmailBannerRef.current?.triggerScan();
           return;
         }
       }
 
-      // Not connected — get OAuth URL and redirect
       const connectRes = await fetch('/api/gmail/connect');
       if (connectRes.ok) {
         const connectData = await connectRes.json();
@@ -247,7 +240,6 @@ export default function Home() {
         }
       }
 
-      // Error — hide promo, show error
       setShowGmailPromo(false);
       setGmailError('Gmail is temporarily unavailable. Please try again later.');
     } catch (err) {
@@ -267,6 +259,7 @@ export default function Home() {
 
   return (
     <div className={styles.page}>
+      <GmailSyncBanner ref={gmailBannerRef} onComplete={() => mutate()} />
       <header className={styles.header}>
         <div className={styles.top}>Subscriptions</div>
         {refreshing && <div className={styles.refreshBar} />}
@@ -412,15 +405,6 @@ export default function Home() {
         <AddSubscription
           onClose={() => setManualAddOpen(false)}
           onSave={() => mutate()}
-        />
-      )}
-      {gmailScanning && (
-        <GmailScanProgress
-          onClose={() => setGmailScanning(false)}
-          onComplete={() => {
-            setGmailScanning(false);
-            mutate();
-          }}
         />
       )}
       {showGmailPromo && shortcutChecked && !shortcutModalOpen && (
