@@ -57,18 +57,12 @@ function getCancelStrategy(subscription) {
   }
 
   if (platform === 'web') {
-    if (cancel_url) {
-      return {
-        type: 'web_redirect',
-        url: cancel_url,
-        instructions: cancel_instructions,
-        label: 'Website',
-      };
-    }
-    if (cancel_instructions) {
-      return { type: 'instructions_only', instructions: cancel_instructions };
-    }
-    return { type: 'unsupported' };
+    return {
+      type: 'web_popup',
+      url: cancel_url || null,
+      instructions: cancel_instructions || null,
+      label: 'Website',
+    };
   }
 
   // manual / unknown platform
@@ -167,15 +161,22 @@ export default function SubscriptionDetail({ subscription, onCancel, onDelete, o
     if (cancelling || isInactive) return;
     setActionError(null);
 
-    if (strategy.type === 'store_redirect' || strategy.type === 'web_redirect') {
+    if (strategy.type === 'store_redirect') {
       openedAtRef.current = Date.now();
       setCancelView('waiting');
       window.open(strategy.url, '_blank');
-    } else if (strategy.type === 'instructions_only') {
-      setCancelView('instructions');
+    } else if (strategy.type === 'web_popup') {
+      setCancelView('web_cancel');
     } else {
-      // unsupported
       setCancelView('unsupported');
+    }
+  };
+
+  const handleGoToService = () => {
+    if (strategy.url) {
+      openedAtRef.current = Date.now();
+      setCancelView('waiting');
+      window.open(strategy.url, '_blank');
     }
   };
 
@@ -409,6 +410,39 @@ export default function SubscriptionDetail({ subscription, onCancel, onDelete, o
           </div>
         )}
 
+        {/* WEB CANCEL: popup with login instructions */}
+        {cancelView === 'web_cancel' && (
+          <div className={styles.confirmCard}>
+            <div className={styles.confirmTitle}>How to cancel {subscription.service_name}</div>
+            <div className={styles.unsupportedBody}>
+              You'll likely need to log in to the service, then navigate to your Profile or Account Settings, and look for Manage Subscriptions.
+            </div>
+            {strategy.instructions && (
+              <div className={styles.instructionsBody}>
+                {strategy.instructions.split('\n').map((line, i) => (
+                  <div key={i} className={styles.instructionStep}>{line}</div>
+                ))}
+              </div>
+            )}
+            {strategy.url && (
+              <button className={styles.confirmYes} onClick={handleGoToService}>
+                Go to service
+              </button>
+            )}
+            <button
+              className={styles.confirmYes}
+              onClick={handleConfirmYes}
+              disabled={cancelling}
+              style={strategy.url ? { backgroundColor: 'transparent', color: '#007AFF' } : {}}
+            >
+              {cancelling ? 'Confirming...' : 'I cancelled it'}
+            </button>
+            <button className={styles.confirmNo} onClick={handleConfirmNo}>
+              Go back
+            </button>
+          </div>
+        )}
+
         {/* INSTRUCTIONS: web subscription with step-by-step guide */}
         {cancelView === 'instructions' && (
           <div className={styles.instructionsCard}>
@@ -476,9 +510,7 @@ export default function SubscriptionDetail({ subscription, onCancel, onDelete, o
           <div className={styles.cancelHint}>
             {strategy.type === 'store_redirect'
               ? `You'll be redirected to ${strategy.label} to manage your subscription.`
-              : strategy.type === 'web_redirect'
-                ? `You'll be redirected to the service website to cancel.`
-                : `If you cancel now, you can still use it until ${renewalDate}.`}
+              : `If you cancel now, you can still use it until ${renewalDate}.`}
           </div>
         )}
 
