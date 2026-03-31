@@ -7,12 +7,12 @@ import { getMessaging, getToken, isSupported, onMessage } from 'firebase/messagi
 const VAPID_KEY = process.env.NEXT_PUBLIC_FIREBASE_VAPID_KEY;
 
 const messagingFirebaseConfig = {
-  apiKey: 'AIzaSyDAXVQL_NX21EVPv22fuJuSROa_8v3UbQM',
-  authDomain: 'reclaim-38744.firebaseapp.com',
-  projectId: 'reclaim-38744',
-  storageBucket: 'reclaim-38744.firebasestorage.app',
-  messagingSenderId: '25440715803',
-  appId: '1:25440715803:web:fdfdb0e5d41b579be8e4be',
+  apiKey: 'AIzaSyDncSbmyat6egfSBtJuyoAu66_GktdvCAE',
+  authDomain: 'chargebacknew.firebaseapp.com',
+  projectId: 'chargebacknew',
+  storageBucket: 'chargebacknew.firebasestorage.app',
+  messagingSenderId: '387108468290',
+  appId: '1:387108468290:web:63a114705ce9a156fedfdb',
 };
 
 function getMessagingApp() {

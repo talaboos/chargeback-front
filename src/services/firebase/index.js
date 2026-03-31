@@ -2,13 +2,13 @@ import { initializeApp } from 'firebase/app';
 import { getAuth } from 'firebase/auth';
 
 const firebaseConfig = {
-  apiKey: 'AIzaSyA4780QbAjFPc9udbabWw2Mt-lDReELm8M',
-  authDomain: 'chargeback-8df08.firebaseapp.com',
-  projectId: 'chargeback-8df08',
-  storageBucket: 'chargeback-8df08.firebasestorage.app',
-  messagingSenderId: '400256012486',
-  appId: '1:400256012486:web:4966fa42915f2512e847c7',
-  measurementId: 'G-LJKZHZVZGD',
+  apiKey: 'AIzaSyDncSbmyat6egfSBtJuyoAu66_GktdvCAE',
+  authDomain: 'chargebacknew.firebaseapp.com',
+  projectId: 'chargebacknew',
+  storageBucket: 'chargebacknew.firebasestorage.app',
+  messagingSenderId: '387108468290',
+  appId: '1:387108468290:web:63a114705ce9a156fedfdb',
+  measurementId: 'G-7EW1E2C8WR',
 };
 
 const app = initializeApp(firebaseConfig);
