@@ -116,7 +116,7 @@ export default function Home() {
               </button>
             </div>
           ) : (
-            <button className={styles.rowButton} onClick={handleConnectGmail}>
+            <button className={styles.rowButton} disabled style={{ opacity: 0.5, cursor: 'not-allowed' }}>
               <div className={styles.rowIcon}>
                 <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none">
                   <path
@@ -131,7 +131,7 @@ export default function Home() {
               </div>
               <div className={styles.rowContent}>
                 <span className={styles.rowTitle}>Connect Gmail</span>
-                <span className={styles.rowSubtitle}>Scan for subscriptions</span>
+                <span className={styles.rowSubtitle}>Coming soon</span>
               </div>
               <div className={styles.chevron}>
                 <svg width="7" height="12" viewBox="0 0 7 12" fill="none" xmlns="http://www.w3.org/2000/svg">

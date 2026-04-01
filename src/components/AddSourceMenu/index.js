@@ -95,10 +95,9 @@ export default function AddSourceMenu({ onClose, onUploadComplete, onManualAdd, 
       <div className={styles.menu}>
         <button
           className={styles.option}
-          onClick={() => {
-            onClose();
-            onGmailConnect?.();
-          }}
+          disabled
+          style={{ opacity: 0.5, cursor: 'not-allowed' }}
+          onClick={() => {}}
         >
           <div className={styles.icon}>
             <svg
@@ -120,7 +119,7 @@ export default function AddSourceMenu({ onClose, onUploadComplete, onManualAdd, 
           </div>
           <div className={styles.label}>
             <span className={styles.title}>Connect Gmail</span>
-            <span className={styles.subtitle}>Scan for subscriptions</span>
+            <span className={styles.subtitle}>Coming soon</span>
           </div>
         </button>
         <button
