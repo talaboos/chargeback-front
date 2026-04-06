@@ -407,7 +407,18 @@ export default function Home() {
           onSave={() => mutate()}
         />
       )}
-      {/* Gmail promo — temporarily disabled */}
+      {showGmailPromo && shortcutChecked && !shortcutModalOpen && (
+        <GmailPromo
+          onConnect={() => {
+            localStorage.setItem('gmail_promo_dismissed', '1');
+            handleGmailConnect();
+          }}
+          onSkip={() => {
+            localStorage.setItem('gmail_promo_dismissed', '1');
+            setShowGmailPromo(false);
+          }}
+        />
+      )}
       {selectedSub && (
         <SubscriptionDetail
           subscription={subscriptions.find((s) => s.id === selectedSub.id) || selectedSub}
