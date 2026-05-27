@@ -119,17 +119,8 @@ export default function Home() {
     (s) => !s.platform || s.platform === 'manual' || !['app_store', 'play_store', 'web'].includes(s.platform),
   );
 
-  // Per-subId in-flight guard — blocks repeat clicks of the same Cancel/Delete
-  // button while a request is in flight. PostHog showed one user emitting 24
-  // subscription_deleted events in an hour because the button stayed clickable
-  // through the round-trip.
-  const cancellingRef = useRef(new Set());
-  const deletingRef = useRef(new Set());
-
   const handleCancel = useCallback(
     async (subId) => {
-      if (cancellingRef.current.has(subId)) return;
-      cancellingRef.current.add(subId);
       try {
         const res = await fetch(`/api/subscriptions/${subId}/cancel`, {
           method: 'POST',
@@ -140,8 +131,6 @@ export default function Home() {
       } catch (err) {
         console.error('Cancel failed:', err);
         throw err;
-      } finally {
-        cancellingRef.current.delete(subId);
       }
     },
     [mutate],
@@ -149,8 +138,6 @@ export default function Home() {
 
   const handleDelete = useCallback(
     async (subId) => {
-      if (deletingRef.current.has(subId)) return;
-      deletingRef.current.add(subId);
       try {
         const res = await fetch(`/api/subscriptions/${subId}`, {
           method: 'DELETE',
@@ -161,8 +148,6 @@ export default function Home() {
       } catch (err) {
         console.error('Delete failed:', err);
         throw err;
-      } finally {
-        deletingRef.current.delete(subId);
       }
     },
     [mutate],
